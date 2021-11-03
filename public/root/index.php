@@ -45,10 +45,14 @@ require_once("./user_actions.php");
                 foreach ($dirContent as $v) {
                     if (is_array($v)) {
                         foreach (scandir($basePath . $v) as $f) {
-                            echo "<div class='folder2__element'>$v</div>";
+                            echo "
+                                    <a class='folder2__element' href='./select-file.php?file=$v'>$v</a>
+                                ";
                         }
                     };
-                    echo "<div class='folder1__element'>$v</div>";
+                    echo "<a class='folder2__element' href='./select-file.php?file=$v'>$v</a> <br/>";
+                    echo filesize("$basePath/$v");
+                    echo filectime("$basePath/$v");
                 }
                 ?>
             </div>
