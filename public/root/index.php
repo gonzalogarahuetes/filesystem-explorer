@@ -43,12 +43,17 @@ require_once("./user_actions.php");
                 $basePath = "./Files";
                 $dirContent = scandir($basePath);
                 foreach ($dirContent as $v) {
-                    if (is_array($v)) {
-                        foreach (scandir($basePath . $v) as $f) {
-                            echo "<div class='folder2__element'>$v</div>";
-                        }
-                    };
-                    echo "<div class='folder1__element'>$v</div>";
+                    $fileExtension = explode(".", $v);
+                    // if (is_array($v)) {
+                    //     foreach (scandir($basePath . $v) as $f) {
+                    //         echo "<div class='folder2__element'>$v</div>";
+                    //     }
+                    // };
+                    if(is_dir($v)) {
+                        echo "<img class='fileIcon' src='./Icons/folder.svg'><div class='folder1__element'>$v</div>";
+                    } else {
+                        echo "<img class='fileIcon' src='./Icons/$fileExtension[1].svg'><div class='folder1__element'>$v</div>";
+                    }
                 }
                 ?>
             </div>
