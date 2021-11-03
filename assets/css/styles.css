@@ -1,0 +1,185 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/********** Header ********/
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: lightblue;
+}
+
+/********** Main *********/
+.main {
+  display: flex;
+}
+
+.header__search {
+  font-size: 16px;
+  font-family: inherit;
+  padding: 0.25em 0.5em;
+  background-color: #fff;
+  border: 1px solid #8b8a8b;
+  border-radius: 4px;
+  width: 200px;
+  margin: 15px 0;
+}
+
+/* Left bar */
+.explorer {
+  width: 20%;
+  padding: 0px 20px;
+}
+
+.explorer input {
+  font-size: 16px;
+  font-family: inherit;
+  padding: 0.25em 0.5em;
+  background-color: #fff;
+  border: 2px solid #8b8a8b;
+  border-radius: 4px;
+  width: 150px;
+  margin: 15px 0;
+}
+
+.new-folder {
+  width: 150px;
+  padding: 9px 25px;
+  background-color: rgba(0, 136, 169, 1);
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+}
+
+.new-folder:hover {
+  background-color: rgba(0, 136, 169, 0.8);
+}
+
+.explorer__folders {
+  margin-top: 15px;
+}
+
+.explorer__folders-root {
+  display: flex;
+  align-items: center;
+}
+
+/* Middle */
+.content {
+  width: 60%;
+  padding: 0px 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.content__guide {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #8b8a8b;
+  padding-bottom: 10px;
+}
+
+.content__guide p {
+  font-size: 20px;
+}
+
+.guide__p-right {
+  width: 45%;
+  display: grid;
+  grid-template-columns: 1.5fr 1.5fr 1fr;
+}
+
+.guide_upload {
+  cursor: pointer;
+  transition: all 0.3s ease 0s;
+  border-radius: 10px;
+  background-color: #dbd0c0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guide_upload:hover {
+  opacity: 0.8;
+}
+
+.content__folder {
+  border-bottom: 1px solid #8b8a8b;
+  padding-bottom: 5px;
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.content__folder-title {
+  font-size: 20px;
+}
+
+/* Right Bar */
+.details {
+  padding: 10px 20px;
+  width: 20%;
+}
+
+.details__title {
+  display: flex;
+  padding: 30px 20px;
+  border-bottom: 1px solid #8b8a8b;
+  align-items: center;
+}
+
+.details__title p,
+button {
+  margin-right: 20px;
+}
+
+.details__content {
+  margin-top: 20px;
+  padding: 15px;
+}
+
+.details__content p {
+  margin: 5px 0px;
+  padding: 10px;
+}
+
+/******** Others *******/
+.fileIcon {
+  width: 30px;
+  margin-right: 10px;
+}
+
+.fileIcon-small {
+  width: 35px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.fileIcon-medium {
+  width: 25px;
+  padding: 3px;
+  cursor: pointer;
+}
+
+.fileIcon-large {
+  width: 40px;
+}
+
+.log_out {
+  font-size: 20px;
+  text-decoration: none;
+}

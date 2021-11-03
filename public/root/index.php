@@ -1,80 +1,92 @@
 <?php
+require_once("../../config/app.php");
+
 session_start();
 !$_SESSION["username"] ? header("Location: ../login.php") : "";
 require_once("./user_actions.php");
+
+$title = "Index";
+include(ROOT_PATH . "inc/_head.php");
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index</title>
-</head>
-
-<body>
-    <header>
-        <img src="" alt="Logo">
-        <input type="text" class="header__search">
+    <header class="header">
+        <img class='fileIcon-large' src="../../assets/icons/bug.svg">
+        <input type="search" class="header__search" placeholder="Search">
         <p class="header_welcome">Welcome, <?= $_SESSION["username"] ?></p>
-        <button class="header__logout">
-            <a href="../logout.php">Logout</a>
-        </button>
+        <a href="../logout.php" class="log_out">Logout</a>
     </header>
-    <main>
+    <main class="main">
         <section class="explorer">
             <form action="./new_folder.php" method="post" class="new-">
                 <input type="text" name="newFolder" class="explorer__new">
                 <button type="submit" class="new-folder"> New Folder</button>
             </form>
-            <div class="explorer__folders"></div>
+            <div class="explorer__folders">
+                <div class="explorer__folders-root">
+                    <img class='fileIcon' src='./Icons/folder.svg'>
+                    <h3>/root</h3>
+                </div>
+                <?php
+                    $basePath = "./Files";
+                    $dirContent = scandir($basePath);
+                    foreach ($dirContent as $v) {
+                        $fileExtension = explode(".", $v);
+                        if(!is_file($basePath . "/" . $v)) {
+                            if (!($v == '.')) {
+                                if (!($v == '..')) {
+                                    echo "<img class='fileIcon' src='./Icons/folder.svg'><div class='folder1__element'>$v</div>";
+                                }
+                            }
+                        } else {
+                            echo "<img class='fileIcon' src='./Icons/$fileExtension[1].svg'><div class='folder1__element'>$v</div>";
+                        }
+                    }
+                ?>
+            </div>
         </section>
         <section class="content">
             <div class="content__guide">
-                <p class="guide__p">Name</p>
-                <p class="guide__p">Size</p>
-                <p class="guide__p">Modified</p>
-                <button class="guide_upload">Upload</button>
+                <p class="guide__p guide__p-left">Name</p>
+                <div class="guide__p-right">
+                    <p class="guide__p">Size</p>
+                    <p class="guide__p">Modified</p>
+                    <button class="guide_upload"><img class='fileIcon-small' src="../../assets/icons/cloudup.svg"></i></button>
+                </div>
             </div>
             <div class="content__folder">
+                <img class='fileIcon' src='./Icons/folder.svg'>
+                <p class="content__folder-title">Others</p>
+            </div>
+            <div class="content__list">
                 <?php
-                $basePath = "./Files";
-                $dirContent = scandir($basePath);
-                foreach ($dirContent as $v) {
-                    $fileExtension = explode(".", $v);
-                    // if (is_array($v)) {
-                    //     foreach (scandir($basePath . $v) as $f) {
-                    //         echo "<div class='folder2__element'>$v</div>";
-                    //     }
-                    // };
-                    if(is_dir($v)) {
-                        echo "<img class='fileIcon' src='./Icons/folder.svg'><div class='folder1__element'>$v</div>";
-                    } else {
-                        echo "<img class='fileIcon' src='./Icons/$fileExtension[1].svg'><div class='folder1__element'>$v</div>";
+                    $basePath = "./Files";
+                    $dirContent = scandir($basePath);
+                    foreach ($dirContent as $v) {
+                        $fileExtension = explode(".", $v);
+                        if(!is_file($basePath . "/" . $v)) {
+                            if (!($v == '.')) {
+                                if (!($v == '..')) {
+                                    echo "<img class='fileIcon' src='./Icons/folder.svg'><div class='folder1__element'>$v</div>";
+                                }
+                            }
+                        } else {
+                            echo "<img class='fileIcon' src='./Icons/$fileExtension[1].svg'><div class='folder1__element'>$v</div>";
+                        }
                     }
-                }
                 ?>
             </div>
-            <div class="contet__list"></div>
         </section>
         <section class="details">
             <div class="details__title">
                 <i></i>
                 <p>Title</p>
-                <button class="details__btn--edit">Edit</button>
-                <button class="details__btn--delete">Delete</button>
+                <button class="details__btn--edit"><img class='fileIcon-medium' src="../../assets/icons/edit.svg"></button>
+                <button class="details__btn--delete"><img class='fileIcon-medium' src="../../assets/icons/delete.svg"></button>
             </div>
             <div class="details__content">
-                <p>Type</p>
-                <p>PHP</p>
-                <p>Size</p>
-                <p>500Kb</p>
-                <p>Modified</p>
-                <p>12/01/2021</p>
-                <p>Created</p>
-                <p>1/01/2021</p>
+                <p>Type <span>PHP<span></p>
+                <p>Size <span>500Kb<span></p>
+                <p>Modified <span>12/01/2021<span></p>
+                <p>Created <span>1/01/2021<span></p>
             </div>
         </section>
     </main>
