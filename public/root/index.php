@@ -1,6 +1,7 @@
 <?php
 session_start();
 !$_SESSION["username"] ? header("Location: ../login.php") : "";
+require_once("./user_actions.php");
 ?>
 
 <!DOCTYPE html>
@@ -17,13 +18,17 @@ session_start();
     <header>
         <img src="" alt="Logo">
         <input type="text" class="header__search">
+        <p class="header_welcome">Welcome, <?= $_SESSION["username"] ?></p>
         <button class="header__logout">
             <a href="../logout.php">Logout</a>
         </button>
     </header>
     <main>
         <section class="explorer">
-            <button class="new-folder"></button>
+            <form action="./new_folder.php" method="post" class="new-">
+                <input type="text" name="newFolder" class="explorer__new">
+                <button type="submit" class="new-folder"> New Folder</button>
+            </form>
             <div class="explorer__folders"></div>
         </section>
         <section class="content">
@@ -33,9 +38,19 @@ session_start();
                 <p class="guide__p">Modified</p>
                 <button class="guide_upload">Upload</button>
             </div>
-            <div class="content__current-folder">
-                <i></i>
-                <p>Banana.na</p>
+            <div class="content__folder">
+                <?php
+                $basePath = "C:/XAMPP/htdocs/PhpBasicWorkshop/manage-files/filesystem-explorer/public/root/Files";
+                $dirContent = scandir($basePath);
+                foreach ($dirContent as $v) {
+                    if (is_array($v)) {
+                        foreach (scandir($basePath . $v) as $f) {
+                            echo "<div class='folder2__element'>$v</div>";
+                        }
+                    };
+                    echo "<div class='folder1__element'>$v</div>";
+                }
+                ?>
             </div>
             <div class="contet__list"></div>
         </section>
@@ -43,8 +58,8 @@ session_start();
             <div class="details__title">
                 <i></i>
                 <p>Title</p>
-                <button class="details__btn--edit"></button>
-                <button class="details__btn--delete"></button>
+                <button class="details__btn--edit">Edit</button>
+                <button class="details__btn--delete">Delete</button>
             </div>
             <div class="details__content">
                 <p>Type</p>

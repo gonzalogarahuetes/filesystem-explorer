@@ -19,7 +19,7 @@ isset($_SESSION["username"]) ? header("Location: ./root") : "";
         <form method="post" action="./login.php" class="login">
             <input type="text" class="login__username" placeholder="username" name="username">
             <input type="password" class="login_pass" placeholder="password" name="password">
-            <button type="submit" class="login_btn">
+            <button type="submit" class="login_btn">Log in!</button>
         </form>
     </div>
 </body>
