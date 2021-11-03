@@ -2,6 +2,14 @@
 session_start();
 !$_SESSION["username"] ? header("Location: ../login.php") : "";
 require_once("./user_actions.php");
+
+if (isset($_SESSION["fileInfo"])) {
+    $type = $_SESSION["fileInfo"]["type"];
+    $size = $_SESSION["fileInfo"]["size"];
+    $modified = $_SESSION["fileInfo"]["modified"];
+    $created = $_SESSION["fileInfo"]["created"];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -43,12 +51,12 @@ require_once("./user_actions.php");
                 $basePath = "./Files";
                 $dirContent = scandir($basePath);
                 foreach ($dirContent as $v) {
-                    if (is_array($v)) {
-                        foreach (scandir($basePath . $v) as $f) {
-                            echo "<div class='folder2__element'>$v</div>";
-                        }
-                    };
-                    echo "<div class='folder1__element'>$v</div>";
+                    $currentFile = "$basePath/$v";
+                    if (is_dir($currentFile)) {
+                        echo "<div class='folder1__element'><a href='./select_file.php?file=$v'>$v</a></div>";
+                    } else {
+                        echo "<div class='folder1__element'><a href='./select_file.php?file=$v'>$v</a><p>" . filesize($currentFile) . "</p><p>" . filectime($currentFile) . "</p></div>";
+                    }
                 }
                 ?>
             </div>
@@ -63,13 +71,13 @@ require_once("./user_actions.php");
             </div>
             <div class="details__content">
                 <p>Type</p>
-                <p>PHP</p>
+                <p><?= $type ? $type : "" ?></p>
                 <p>Size</p>
-                <p>500Kb</p>
+                <p><?= $size ? $size : "" ?></p>
                 <p>Modified</p>
-                <p>12/01/2021</p>
+                <p><?= $modified ? $modified : "" ?></p>
                 <p>Created</p>
-                <p>1/01/2021</p>
+                <p><?= $created ? $created : "" ?></p>
             </div>
         </section>
     </main>
