@@ -25,7 +25,7 @@ require_once("./user_actions.php");
     </header>
     <main>
         <section class="explorer">
-            <form action="./new_folder.php" method="post" class="new-">
+            <form action="./user_actions.php" method="post" class="new-">
                 <input type="text" name="newFolder" class="explorer__new">
                 <button type="submit" class="new-folder"> New Folder</button>
             </form>
@@ -40,7 +40,7 @@ require_once("./user_actions.php");
             </div>
             <div class="content__folder">
                 <?php
-                $basePath = "C:/XAMPP/htdocs/PhpBasicWorkshop/manage-files/filesystem-explorer/public/root/Files";
+                $basePath = "./Files";
                 $dirContent = scandir($basePath);
                 foreach ($dirContent as $v) {
                     if (is_array($v)) {
