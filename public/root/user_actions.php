@@ -62,3 +62,38 @@ function get_folder_size($folder) {
         }
     return $total_size;
 }
+
+function upload() {
+    if (isset($_POST['submit'])) {
+        $file = $_FILES['fileUpload'];
+        print_r($file);
+
+        $fileName = $_FILES['fileUpload']['name'];
+        $fileType = $_FILES['fileUpload']['type'];
+        $fileTempDir = $_FILES['fileUpload']['tmp_name'];
+        $fileSize = $_FILES['fileUpload']['size'];
+        $fileError = $_FILES['fileUpload']['error'];
+
+        $fileExt = explode('.', $fileName);
+        $fileActualExt = strtolower(end($fileExt));
+
+        $allowedFileType = array('jpg', 'jpeg', 'png', 'pdf', 'odt', 'txt', 'svg');
+
+        if (in_array($fileActualExt, $allowedFileType)) {
+            if ($fileError === 0) {
+                if($fileSize < 1000000) {
+                    $fileNewName = uniqid('', true).'.'.$fileActualExt;
+                    $fileDestination = './upload/'.$fileNewName;
+                    move_uploaded_file($fileTempDir, $fileDestination);
+                    header('Location: ./index.php?uploadsuccess');
+                } else {
+                    echo "Error while uploading file / file size is too big";
+                }
+            } else {
+                echo "Error while uploading file";
+            }
+        } else {
+            echo "Can not upload file of this type";
+        }
+    }
+}

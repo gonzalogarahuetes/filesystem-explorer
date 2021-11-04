@@ -112,12 +112,13 @@ include(ROOT_PATH . "inc/_head.php");
                 id="modal-form-file"
                 method="post"
                 enctype="multipart/form-data"
+                action="./upload.php"
             >
                 <div class="padding-1">
                     <label for="fileUpload">Title :</label>
                     <input
                         type="file"
-                        id="file"
+                        id="fileUpload"
                         name="fileUpload"
                         value=""
                         required
@@ -127,7 +128,7 @@ include(ROOT_PATH . "inc/_head.php");
                     <button id="cancel-modal-file" class="button--small">
                         Cancel
                     </button>
-                    <button type="submit" class="button--small">Submit</button>
+                    <button type="submit" name="submit" class="button--small">Submit</button>
                 </div>
                 </form>
         </div>
