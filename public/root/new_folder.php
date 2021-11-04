@@ -1,4 +1,3 @@
 <?php
-
-require_once("./user_actions.php");
-newFolder();
+  require_once("./user_actions.php");
+  newFolder();

@@ -5,12 +5,9 @@ session_start();
 !$_SESSION["username"] ? header("Location: ../login.php") : "";
 require_once("./user_actions.php");
 
-if (isset($_SESSION["fileInfo"])) {
-    $type = $_SESSION["fileInfo"]["type"];
-    $size = $_SESSION["fileInfo"]["size"];
-    $modified = $_SESSION["fileInfo"]["modified"];
-    $created = $_SESSION["fileInfo"]["created"];
-}
+$file = $_GET["file"];
+
+selectFile($file);
 
 $title = "Index";
 include(ROOT_PATH . "inc/_head.php");
@@ -67,36 +64,42 @@ include(ROOT_PATH . "inc/_head.php");
         </div>
         <div class="content__folder">
             <img class='fileIcon' src='./Icons/folder.svg'>
-            <p class="content__folder-title">Others</p>
+            <p class="content__folder-title"><?= $file ?></p>
         </div>
         <div class="content__list">
             <?php
-            $basePath = "./Files";
-            $dirContent = scandir($basePath);
-            foreach ($dirContent as $v) {
-                $fileExtension = explode(".", $v);
-                $sizeOfFile = get_folder_size($basePath . "/" . $v);
-                $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
-                if (!is_file($basePath . "/" . $v)) {
-                    if (!($v == '.')) {
-                        if (!($v == '..')) {
-                            echo "
-                                        <div class='display_folder'>
-                                            <img class='fileIcon' src='./Icons/folder.svg'>
-                                            <p class='folder1__element'><a href='./select-file.php?file=$basePath/$v'>$v</a></p>
-                                            <p>$sizeOfFile</p>
-                                            <p>$timeModified</p>
-                                        </div>";
-                        }
-                    }
-                } else {
-                    echo "
+            $basePath = "./Files" . "/" . $file;
+            if (is_file($basePath)) {
+                $fileExtension = explode(".", $basePath);
+                // echo $fileExtension[2];
+                $sizeOfFile = filesize($basePath);
+                $timeModified = date("F d Y", filemtime($basePath));
+                echo "
                                     <div class='display_folder'>
-                                        <img class='fileIcon' src='./Icons/$fileExtension[1].svg'>
-                                        <p class='folder1__element'><a href='./select-file.php?file=$basePath/$v'>$v</a></p>
+                                        <img class='fileIcon' src='./Icons/$fileExtension[2].svg'>
+                                        <p class='folder1__element'>$file</p>
                                         <p>$sizeOfFile</p>
                                         <p>$timeModified</p>
                                     </div>";
+            } else {
+                $dirContent = scandir($basePath);
+                foreach ($dirContent as $v) {
+                    $fileExtension = explode(".", $v);
+                    $sizeOfFile = get_folder_size($basePath . "/" . $v);
+                    $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
+                    if (!is_file($basePath . "/" . $v)) {
+                        if (!($v == '.')) {
+                            if (!($v == '..')) {
+                                echo "
+                                            <div class='display_folder'>
+                                                <img class='fileIcon' src='./Icons/folder.svg'>
+                                                <p class='folder1__element'>$v</p>
+                                                <p>$sizeOfFile</p>
+                                                <p>$timeModified</p>
+                                            </div>";
+                            }
+                        }
+                    }
                 }
             }
 
@@ -129,14 +132,10 @@ include(ROOT_PATH . "inc/_head.php");
             <button class="details__btn--delete"><img class='fileIcon-medium' src="../../assets/icons/delete.svg"></button>
         </div>
         <div class="details__content">
-            <p>Type</p>
-            <p><?= $type ? $type : "" ?></p>
-            <p>Size</p>
-            <p><?= $size ? $size : "" ?></p>
-            <p>Modified</p>
-            <p><?= $modified ? $modified : "" ?></p>
-            <p>Created</p>
-            <p><?= $created ? $created : "" ?></p>
+            <p>Type <span>PHP<span></p>
+            <p>Size <span>500Kb<span></p>
+            <p>Modified <span>12/01/2021<span></p>
+            <p>Created <span>1/01/2021<span></p>
         </div>
     </section>
 </main>

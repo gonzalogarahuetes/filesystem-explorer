@@ -16,7 +16,7 @@ function selectFile($file)
     session_start();
     $name = $file;
     $explode = explode(".", $file);
-    $type = $explode[1];
+    $type = $explode[count($explode) - 1];
     $size = filesize($file);
     $modified = filemtime($file);
     $created = filectime($file);
