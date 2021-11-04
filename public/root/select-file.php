@@ -5,6 +5,8 @@ session_start();
 !$_SESSION["username"] ? header("Location: ../login.php") : "";
 require_once("./user_actions.php");
 
+$file = $_GET["file"];
+
 $title = "Index";
 include(ROOT_PATH . "inc/_head.php");
 ?>
@@ -60,36 +62,42 @@ include(ROOT_PATH . "inc/_head.php");
             </div>
             <div class="content__folder">
                 <img class='fileIcon' src='./Icons/folder.svg'>
-                <p class="content__folder-title">Others</p>
+                <p class="content__folder-title"><?= $file ?></p>
             </div>
             <div class="content__list">
                 <?php
-                    $basePath = "./Files";
-                    $dirContent = scandir($basePath);
-                    foreach ($dirContent as $v) {
-                        $fileExtension = explode(".", $v);
-                        $sizeOfFile = get_folder_size($basePath . "/" . $v);
-                        $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
-                        if(!is_file($basePath . "/" . $v)) {
-                            if (!($v == '.')) {
-                                if (!($v == '..')) {
-                                    echo "
-                                        <div class='display_folder'>
-                                            <img class='fileIcon' src='./Icons/folder.svg'>
-                                            <p class='folder1__element'>$v</p>
-                                            <p>$sizeOfFile</p>
-                                            <p>$timeModified</p>
-                                        </div>";
-                                }
-                            }
-                        } else {
-                            echo "
+                    $basePath = "./Files" . "/" . $file;
+                    if(is_file($basePath)) {
+                        $fileExtension = explode(".", $basePath);
+                        // echo $fileExtension[2];
+                        $sizeOfFile = filesize($basePath);
+                        $timeModified = date("F d Y", filemtime($basePath));
+                        echo "
                                     <div class='display_folder'>
-                                        <img class='fileIcon' src='./Icons/$fileExtension[1].svg'>
-                                        <p class='folder1__element'>$v</p>
+                                        <img class='fileIcon' src='./Icons/$fileExtension[2].svg'>
+                                        <p class='folder1__element'>$file</p>
                                         <p>$sizeOfFile</p>
                                         <p>$timeModified</p>
                                     </div>";
+                    } else {
+                        $dirContent = scandir($basePath);
+                        foreach ($dirContent as $v) {
+                            $fileExtension = explode(".", $v);
+                            $sizeOfFile = get_folder_size($basePath . "/" . $v);
+                            $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
+                            if(!is_file($basePath . "/" . $v)) {
+                                if (!($v == '.')) {
+                                    if (!($v == '..')) {
+                                        echo "
+                                            <div class='display_folder'>
+                                                <img class='fileIcon' src='./Icons/folder.svg'>
+                                                <p class='folder1__element'>$v</p>
+                                                <p>$sizeOfFile</p>
+                                                <p>$timeModified</p>
+                                            </div>";
+                                    }
+                                }
+                            }
                         }
                     }
 

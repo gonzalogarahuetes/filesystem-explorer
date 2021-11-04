@@ -76,6 +76,13 @@ body {
   align-items: center;
 }
 
+.display_folder-title {
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  margin: 5px 10px;
+}
+
 /* Middle */
 .content {
   width: 60%;
@@ -127,6 +134,13 @@ body {
 
 .content__folder-title {
   font-size: 20px;
+}
+
+.display_folder {
+  display: grid;
+  grid-template-columns: 0.2fr 2.2fr 0.8fr 1fr;
+  align-items: center;
+  padding: 10px 0px;
 }
 
 /* Right Bar */
