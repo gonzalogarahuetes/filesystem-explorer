@@ -11,6 +11,7 @@ if (isset($_SESSION["fileInfo"])) {
     $size = $_SESSION["fileInfo"]["size"];
     $modified = $_SESSION["fileInfo"]["modified"];
     $created = $_SESSION["fileInfo"]["created"];
+    $shortName = $_SESSION["fileInfo"]["shortName"];
 }
 
 $title = "Index";
@@ -129,7 +130,7 @@ include(ROOT_PATH . "inc/_head.php");
                             <div class='details__header'>
                                 <img class='fileIcon' src='./Icons/" .  ($type ? $type : '') . ".svg'>
                                 <p classname='details__name'>" . ($name ? $name : '') . "</p>
-                                <button class='details__btn--edit'><img class='fileIcon-medium' src='../../assets/icons/edit.svg'></button>
+                                <button type='button' data-open='modal1' class='details__btn--edit'><img class='fileIcon-medium' src='../../assets/icons/edit.svg'></button>
                                 <button class='details__btn--delete' onclick='location.href=\"./delete_file.php?file=$basePath/$name\"'><img class='fileIcon-medium' src='../../assets/icons/delete.svg' onclick='location.href=\"./delete_file.php?file=$basePath/$name\"'></button>
                             </div>
                             <div class='details__content'>
@@ -154,7 +155,27 @@ include(ROOT_PATH . "inc/_head.php");
     }
 
     ?>
+    <div class="modal" id="modal1" data-animation="slideInOutLeft">
+        <div class="modal-dialog">
+            <header class="modal-header">
+                <h2 class="modal__title">RENAME FILE</h2>
+                <button class="close-modal" aria-label="close modal" data-close>
+                    ✕
+                </button>
+            </header>
+            <section class="modal-content">
+                <form action=<?= "./edit_file.php?file=./Files/" . $name ?> method="post" class="modal__form">
+                    <input type="text" class="modal__input" name="newName" placeholder=<?= $shortName ?> />
+                    <input class="modal__btn" type="submit" value="Edit">
+                </form>
+            </section>
+            <footer class="modal-footer">
+                Choose wisely a new name for your file
+            </footer>
+        </div>
+    </div>
 </main>
 </body>
+
 
 </html>
