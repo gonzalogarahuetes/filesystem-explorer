@@ -143,20 +143,20 @@ body {
   padding: 10px 0px;
 }
 
-/* Right Bar */
+/*--------------------------------RIGHT BAR-----------------------------------------*/
 .details {
   padding: 10px 20px;
   width: 20%;
 }
 
-.details__title {
+.details__header {
   display: flex;
   padding: 30px 20px;
   border-bottom: 1px solid #8b8a8b;
   align-items: center;
 }
 
-.details__title p,
+.details__header p,
 button {
   margin-right: 20px;
 }
@@ -169,6 +169,16 @@ button {
 .details__content p {
   margin: 5px 0px;
   padding: 10px;
+}
+
+.details__flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+.details__name {
+  font-size: 2rem;
+  color: blue;
 }
 
 /******** Others *******/
