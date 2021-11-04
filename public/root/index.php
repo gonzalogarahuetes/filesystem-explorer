@@ -53,9 +53,9 @@ if (isset($_SESSION["fileInfo"])) {
                 foreach ($dirContent as $v) {
                     $currentFile = "$basePath/$v";
                     if (is_dir($currentFile)) {
-                        echo "<div class='folder1__element'><a href='./select_file.php?file=$v'>$v</a></div>";
+                        echo "<div class='folder1__element'><a href='./select_file.php?file=$currentFile'>$v</a></div>";
                     } else {
-                        echo "<div class='folder1__element'><a href='./select_file.php?file=$v'>$v</a><p>" . filesize($currentFile) . "</p><p>" . filectime($currentFile) . "</p></div>";
+                        echo "<div class='folder1__element'><a href='./select_file.php?file=$currentFile'>$v</a><p>" . filesize($currentFile) . "</p><p>" . filectime($currentFile) . "</p></div>";
                     }
                 }
                 ?>
