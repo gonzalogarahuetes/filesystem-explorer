@@ -34,24 +34,6 @@ include(ROOT_PATH . "inc/_head.php");
             </div>
             <?php
             $basePath = "./Files";
-            function listFolderFiles($basePath)
-            {
-                $items = scandir($basePath);
-                unset($items[array_search('.', $items, true)]);
-                unset($items[array_search('..', $items, true)]);
-                // prevent empty ordered elements
-                if (count($items) < 1)
-                    return;
-                foreach ($items as $item) {
-                    $fileExtension = explode(".", $item);
-                    if (is_dir($basePath . '/' . $item)) {
-                        echo "<div class='display_folder-title'><img class='fileIcon' src='./Icons/folder.svg'><p class='folder1__element'><a href='./select-file.php?file=$item' class='link'>$item</a></p></div>";
-                        // listFolderFiles($basePath.'/'.$item);
-                    } else {
-                        echo "<div class='display_folder-title'><img class='fileIcon' src='./Icons/$fileExtension[1].svg'><p class='folder1__element'><a href='./select-file.php?file=$item' class='link'>$item</a></p></div>";
-                    }
-                }
-            }
             listFolderFiles($basePath);
             ?>
         </div>
@@ -62,22 +44,23 @@ include(ROOT_PATH . "inc/_head.php");
             <div class="guide__p-right">
                 <p class="guide__p">Size</p>
                 <p class="guide__p">Modified</p>
-                <button class="guide_upload"><img class='fileIcon-small' src="../../assets/icons/cloudup.svg"></i></button>
+                <button class="guide_upload" id="btn__upload"><img class='fileIcon-small' src="../../assets/icons/cloudup.svg"></i></button>
             </div>
         </div>
         <div class="content__folder">
             <img class='fileIcon' src='./Icons/folder.svg'>
-            <p class="content__folder-title">Others</p>
+            <p class="content__folder-title">Folders</p>
         </div>
         <div class="content__list">
             <?php
             $basePath = "./Files";
-            $dirContent = scandir($basePath);
+            $newBasePath = $basePath;
+            $dirContent = scandir($newBasePath);
             foreach ($dirContent as $v) {
                 $fileExtension = explode(".", $v);
-                $sizeOfFile = get_folder_size($basePath . "/" . $v);
-                $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
-                if (!is_file($basePath . "/" . $v)) {
+                $sizeOfFile = get_folder_size($newBasePath . "/" . $v);
+                $timeModified = date("F d Y", filemtime($newBasePath . "/" . $v));
+                if (!is_file($newBasePath . "/" . $v)) {
                     if (!($v == '.')) {
                         if (!($v == '..')) {
                             echo "
@@ -98,25 +81,6 @@ include(ROOT_PATH . "inc/_head.php");
                                         <p>$timeModified</p>
                                     </div>";
                 }
-            }
-
-            function get_folder_size($folder)
-            {
-                $total_size = 0;
-                if (is_file($folder)) $total_size = $total_size + filesize($folder);
-                if (is_dir($folder)) {
-                    $files = scandir($folder);
-                    foreach ($files as $file) {
-                        if ($file === '.' or $file === '..') {
-                            continue;
-                        } else {
-                            $path = $folder . '/' . $file;
-                            $total_size = $total_size + filesize($path);
-                            get_folder_size($path);
-                        }
-                    }
-                }
-                return $total_size;
             }
             ?>
         </div>
@@ -139,7 +103,40 @@ include(ROOT_PATH . "inc/_head.php");
             <p><?= $created ? $created : "" ?></p>
         </div>
     </section>
-</main>
-</body>
 
+    <!-- File Upload Modal  -->
+    <article class="modal__file" id="modal__file">
+        <div class="modal__content-file" id="modal__content-file">
+            <button id="button-close-file" class="modal__close-file">X</button>
+            <form
+                id="modal-form-file"
+                method="post"
+                enctype="multipart/form-data"
+            >
+                <div class="padding-1">
+                    <label for="fileUpload">Title :</label>
+                    <input
+                        type="file"
+                        id="file"
+                        name="fileUpload"
+                        value=""
+                        required
+                    />
+                </div>
+                <div class="padding-1">
+                    <button id="cancel-modal-file" class="button--small">
+                        Cancel
+                    </button>
+                    <button type="submit" class="button--small">Submit</button>
+                </div>
+                </form>
+        </div>
+    </article><!-- File Modal  -->
+</main>
+<script>
+    <?php
+        require_once(ROOT_PATH . "assets/js/functions.js");
+    ?>
+</script>
+</body>
 </html>
