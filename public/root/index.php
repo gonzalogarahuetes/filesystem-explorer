@@ -56,6 +56,10 @@ include(ROOT_PATH . "inc/_head.php");
             }
             listFolderFiles($basePath);
             ?>
+            <div class="explorer__folders-root">
+                <img class='fileIcon' src='./Icons/folder.svg'>
+                <h3><a href="./file-to-trash.php">/trash</a></h3>
+            </div>
         </div>
     </section>
     <section class="content">

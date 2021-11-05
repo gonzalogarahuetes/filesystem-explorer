@@ -48,10 +48,29 @@ function convertBytes($bytes)
     return $size;
 }
 
-function deleteFile($file)
+function fileToTrash($file)
 {
     session_start();
+    $explodeSlash = explode("/", $file);
+    $fileName = $explodeSlash[count($explodeSlash) - 1];
+
+    $explodePath = explode("root", __DIR__);
+
+    $newPath = $explodePath[0] . "trash\\" . $fileName;
+
+    rename($file, $newPath);
+    header("Location: ./index.php");
+
+    if (isset($_SESSION["fileInfo"])) unset($_SESSION["fileInfo"]);
+}
+
+function deleteFile($file)
+{
+
+    session_start();
+
     unlink($file);
+
     header("Location: ./index.php");
 
     if (isset($_SESSION["fileInfo"])) unset($_SESSION["fileInfo"]);
