@@ -1,0 +1,21 @@
+.fileIcon {
+  width: 30px;
+  margin-right: 10px;
+}
+
+.fileIcon-small {
+  width: 35px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.fileIcon-medium {
+  width: 25px;
+  padding: 3px;
+  cursor: pointer;
+}
+
+.fileIcon-large {
+  width: 3rem;
+  margin-left: 1rem;
+}

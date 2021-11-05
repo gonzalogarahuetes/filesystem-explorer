@@ -31,24 +31,6 @@ include(ROOT_PATH . "inc/_head.php");
             </div>
             <?php
             $basePath = "./Files";
-            function listFolderFiles($basePath)
-            {
-                $items = scandir($basePath);
-                unset($items[array_search('.', $items, true)]);
-                unset($items[array_search('..', $items, true)]);
-                // prevent empty ordered elements
-                if (count($items) < 1)
-                    return;
-                foreach ($items as $item) {
-                    $fileExtension = explode(".", $item);
-                    if (is_dir($basePath . '/' . $item)) {
-                        echo "<div class='display_folder-title'><img class='fileIcon' src='./Icons/folder.svg'><p class='folder1__element'><a href='./select-file.php?file=$item' class='link'>$item</a></p></div>";
-                        // listFolderFiles($basePath.'/'.$item);
-                    } else {
-                        echo "<div class='display_folder-title'><img class='fileIcon' src='./Icons/$fileExtension[1].svg'><p class='folder1__element'><a href='./select-file.php?file=$item' class='link'>$item</a></p></div>";
-                    }
-                }
-            }
             listFolderFiles($basePath);
             ?>
         </div>
@@ -103,24 +85,6 @@ include(ROOT_PATH . "inc/_head.php");
                 }
             }
 
-            function get_folder_size($folder)
-            {
-                $total_size = 0;
-                if (is_file($folder)) $total_size = $total_size + filesize($folder);
-                if (is_dir($folder)) {
-                    $files = scandir($folder);
-                    foreach ($files as $file) {
-                        if ($file === '.' or $file === '..') {
-                            continue;
-                        } else {
-                            $path = $folder . '/' . $file;
-                            $total_size = $total_size + filesize($path);
-                            get_folder_size($path);
-                        }
-                    }
-                }
-                return $total_size;
-            }
             ?>
         </div>
     </section>
