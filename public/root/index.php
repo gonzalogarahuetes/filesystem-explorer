@@ -30,7 +30,7 @@ include(ROOT_PATH . "inc/_head.php");
         <div class="explorer__folders">
             <div class="explorer__folders-root">
                 <img class='fileIcon' src='./Icons/folder.svg'>
-                <h3>/root</h3>
+                <h3><a href='./index.php'>/root</a></h3>
             </div>
             <?php
             $basePath = "./Files";
@@ -58,6 +58,7 @@ include(ROOT_PATH . "inc/_head.php");
             $dirContent = scandir($newBasePath);
             foreach ($dirContent as $v) {
                 $fileExtension = explode(".", $v);
+                $fileActualExt = strtolower(end($fileExtension));
                 $sizeOfFile = get_folder_size($newBasePath . "/" . $v);
                 $timeModified = date("F d Y", filemtime($newBasePath . "/" . $v));
                 if (!is_file($newBasePath . "/" . $v)) {
@@ -75,7 +76,7 @@ include(ROOT_PATH . "inc/_head.php");
                 } else {
                     echo "
                                     <div class='display_folder'>
-                                        <img class='fileIcon' src='./Icons/$fileExtension[1].svg'>
+                                        <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
                                         <p class='folder1__element'><a href='./select-file.php?file=$basePath/$v'>$v</a></p>
                                         <p>$sizeOfFile</p>
                                         <p>$timeModified</p>

@@ -7,8 +7,6 @@ require_once("./user_actions.php");
 
 $file = $_GET["file"];
 
-selectFile($file);
-
 $title = "Index";
 include(ROOT_PATH . "inc/_head.php");
 ?>
@@ -53,20 +51,23 @@ include(ROOT_PATH . "inc/_head.php");
             $basePath = "./Files" . "/" . $file;
             if (is_file($basePath)) {
                 $fileExtension = explode(".", $basePath);
+                $fileActualExt = strtolower(end($fileExtension));
                 // echo $fileExtension[2];
                 $sizeOfFile = filesize($basePath);
                 $timeModified = date("F d Y", filemtime($basePath));
                 echo "
                                     <div class='display_folder'>
-                                        <img class='fileIcon' src='./Icons/$fileExtension[2].svg'>
+                                        <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
                                         <p class='folder1__element'>$file</p>
                                         <p>$sizeOfFile</p>
                                         <p>$timeModified</p>
                                     </div>";
-            } else {
+            } 
+            if (is_dir($basePath)) {
                 $dirContent = scandir($basePath);
                 foreach ($dirContent as $v) {
                     $fileExtension = explode(".", $v);
+                    $fileActualExt = strtolower(end($fileExtension));
                     $sizeOfFile = get_folder_size($basePath . "/" . $v);
                     $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
                     if (!is_file($basePath . "/" . $v)) {
@@ -81,6 +82,16 @@ include(ROOT_PATH . "inc/_head.php");
                                             </div>";
                             }
                         }
+                    }
+                    if (is_file($basePath . "/" . $v)) {
+                        echo "
+                                            <div class='display_folder'>
+                                            <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
+                                                <p class='folder1__element'>$v</p>
+                                                <p>$sizeOfFile</p>
+                                                <p>$timeModified</p>
+                                            </div>";
+
                     }
                 }
             }
