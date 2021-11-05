@@ -20,6 +20,23 @@ include(ROOT_PATH . "inc/_head.php");
             <button type="submit" class="login__btn">Sign up!</button>
         </form>
     </div>
+    <?php
+    if (isset($_GET["error"])) {
+        switch ($_GET["error"]) {
+            case "unmatch":
+                echo "<div class='login__error'>Both passwords must match</div>";
+                break;
+            case "email":
+                echo "<div class='login__error'>Your email looks weird, try a valid one instead</div>";
+                break;
+            case "short":
+                echo "<div class='login__error'>Username or password is less than six characters long. Please, don't be lazy</div>";
+                break;
+            default:
+                break;
+        }
+    }
+    ?>
     </body>
 </div>
 

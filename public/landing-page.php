@@ -17,7 +17,27 @@ include(ROOT_PATH . "inc/_head.php");
             <button type="submit" class="login__btn">Log in!</button>
         </form>
     </div>
-    <h2 class="login__notlogged">Not registered yet? <a class="signup" href="./singup-page.php">Sign up</a> and start!</h2>
+    <h2 class="login__notlogged">Not registered yet? <a class="signup" href="./signup-page.php">Sign up</a> and start!</h2>
+    <?php
+    if (isset($_GET["error"])) {
+        switch ($_GET["error"]) {
+            case "registered":
+                echo "<div class='login__error'>Seems that you had already registered. Log in!</div>";
+                break;
+            case "unregistered":
+                echo "<div class='login__error'>Seems that you are not registered yet!</div>";
+                break;
+            case "password":
+                echo "<div class='login__error'>Wrong password. Who are you? 🧐</div>";
+                break;
+            default:
+                break;
+        }
+    }
+    if (isset($_GET["info"]) && $_GET["info"] === "loggedout") {
+        echo "<div class='login__info'>Logged out successfuly. Hope you come back soon!</div>";
+    }
+    ?>
     </body>
 </div>
 

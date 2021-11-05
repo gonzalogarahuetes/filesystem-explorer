@@ -6,27 +6,38 @@ function login()
     $username = $_POST["username"];
     $password = $_POST["password"];
 
-    echo $username;
-
     //Llamar a la base de datos
 
-    if (checkuser($username, $password)) {
+    $checkedUser = checkuser($username, $password);
+
+    if ($checkedUser === true) {
         $_SESSION["username"] = $username;
         header("Location: ./root");
-    } else {
-        header("Location: ./landing-page.php");
+    } elseif (!$checkedUser) {
+        header("Location: ./landing-page.php?error=unregistered");
+    } elseif ($checkedUser === "password") {
+        header("Location: ./landing-page.php?error=password");
     }
 }
 
 function checkuser($username, $password)
 {
+    $explodePath = explode("public", __DIR__);
+    $usersJsonFile = $explodePath[0] . "assets\data\users.json";
+    $jsonData = file_get_contents($usersJsonFile);
+    $usersData = json_decode($jsonData, true);
 
-    $usernamedb = "exampleUser";
-    $passworddb = "example123";
+    foreach ($usersData as $user) {
+        if (array_search($username, $user) !== false) {
+            $currentUser = $user;
+        }
+    }
 
-    if ($username === $usernamedb && $password === $passworddb) {
+    if (isset($currentUser) && $currentUser["password"] === $password) {
         return true;
-    } else {
+    } elseif (isset($currentUser) && $currentUser["password"] !== $password) {
+        return "password";
+    } elseif (!isset($currentUser)) {
         return false;
     }
 }
@@ -41,7 +52,7 @@ function logout()
 
     session_destroy();
 
-    header("Location: ./landing-page.php");
+    header("Location: ./landing-page.php?info=loggedout");
 }
 
 function destroyCookie()
@@ -72,6 +83,7 @@ function destroyCookie()
 
 function signup()
 {
+    session_start();
     if (isset($_POST["username"]) && isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["rep-password"])) {
         $username = $_POST["username"];
         $email = $_POST["email"];
@@ -81,12 +93,25 @@ function signup()
         header("Location: ./signup-page.php?error=incomplete");
     }
 
-    //TODO check if both passwords match
-
-    checkSignUp($username, $password, $reppass);
-
     $explodePath = explode("public", __DIR__);
     $usersJsonFile = $explodePath[0] . "assets\data\users.json";
+
+
+    $checkUser = checkSignUp($username, $password, $reppass, $email, $usersJsonFile);
+
+    if ($checkUser === "registered") {
+        header("Location: ./landing-page.php?error=registered");
+        return;
+    } elseif ($checkUser === "unmatch") {
+        header("Location: ./signup-page.php?error=unmatch");
+        return;
+    } elseif ($checkUser === "short") {
+        header("Location: ./signup-page.php?error=short");
+        return;
+    } elseif ($checkUser === "email") {
+        header("Location: ./signup-page.php?error=email");
+        return;
+    }
 
     if (file_exists($usersJsonFile)) {
         $jsonData = file_get_contents($usersJsonFile);
@@ -109,10 +134,37 @@ function signup()
     //fwrite($usersJsonFile, $jsonData);
     //fclose($usersJsonFile);
 
-
-    // header("Location: ./");
+    $_SESSION["username"] = $username;
+    header("Location: ./root");
 }
 
-function checkSignUp($username, $password, $reppass)
+function checkSignUp($username, $password, $reppass, $email, $usersJsonFile)
 {
+    $jsonData = file_get_contents($usersJsonFile);
+
+    $usersData = json_decode($jsonData, true);
+
+    //case user already registered
+
+    foreach ($usersData as $user) {
+        if (array_search($username, $user) !== false) {
+            $error = "registered";
+        }
+    }
+
+    //email not valid
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL) && !isset($error)) $error = "email";
+
+    //case short password or username
+
+    if (strlen($password) < 6 || strlen($username) < 6) $error = "short";
+
+    //case passwords unmatch
+
+    if ($password !== $reppass && !isset($error)) $error = "unmatch";
+
+    if (!isset($error)) $error = "";
+
+    return $error;
 }
