@@ -147,20 +147,20 @@ body {
   padding: 10px 0px;
 }
 
-/* Right Bar */
+/*--------------------------------RIGHT BAR-----------------------------------------*/
 .details {
   padding: 10px 20px;
   width: 20%;
 }
 
-.details__title {
+.details__header {
   display: flex;
   padding: 30px 20px;
   border-bottom: 1px solid #8b8a8b;
   align-items: center;
 }
 
-.details__title p,
+.details__header p,
 button {
   margin-right: 20px;
 }
@@ -173,6 +173,16 @@ button {
 .details__content p {
   margin: 5px 0px;
   padding: 10px;
+}
+
+.details__flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+.details__name {
+  font-size: 2rem;
+  color: blue;
 }
 
 /******** Others *******/
@@ -202,56 +212,109 @@ button {
   text-decoration: none;
 }
 
-/******* Modal *******/
-.modal__file {
+/*---------------------------------EDITING MODAL-------------------------------------*/
+
+.modal {
   position: fixed;
   top: 0;
+  left: 0;
   right: 0;
   bottom: 0;
-  left: 0;
-  display: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
   background: rgba(0, 0, 0, 0.8);
-  color: black;
-  transition: opacity 100ms ease-in;
-}
-
-.modal__content-file {
-  max-width: 600px;
-  width: 90%;
-  position: relative;
-  margin: 10% auto;
-  padding: 20px;
-  border-radius: 3px;
-  background: #fcee6d;
-}
-
-.modal__close-file {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background-color: transparent;
-  border: none;
   cursor: pointer;
-  transition: all 0.5s;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.35s ease-in;
+}
+.modal.is-visible {
+  visibility: visible;
+  opacity: 1;
 }
 
-.modal__close-file:hover {
-  transform: scale(1.5);
-  color: #626972;
+.modal-dialog {
+  position: relative;
+  max-width: 800px;
+  max-height: 80vh;
+  border-radius: 5px;
+  background: white;
+  overflow: auto;
+  cursor: default;
 }
 
-.button--small {
-  min-width: 4.5rem;
-  min-height: 2rem;
-  margin: 0.8rem;
-  background: #3498db;
-  border-radius: 28px;
-  font-family: Arial;
-  color: #ffffff;
-  text-decoration: none;
+.modal-dialog > * {
+  padding: 1rem;
 }
 
-button--small:hover {
-  background: #3cb0fd;
-  text-decoration: none;
+.modal-footer {
+  background: lightblue;
+  text-align: center;
+}
+
+.modal__title {
+  color: rgba(0, 136, 169, 1);
+  margin-left: 1rem;
+}
+
+.modal-header {
+  background: lightblue;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.25rem;
+}
+
+[data-animation="slideInOutLeft"] .modal-dialog {
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: all 0.5s var(--bounceEasing);
+}
+
+[data-animation="slideInOutLeft"].is-visible .modal-dialog {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.2s;
+}
+
+.close-modal {
+  padding: 0.5rem;
+  border-radius: 50%;
+  border: none;
+  color: white;
+  background-color: rgba(0, 136, 169, 1);
+  font-size: 0.5rem;
+}
+
+.close-modal:hover {
+  background-color: rgba(0, 136, 169, 0.7);
+  cursor: pointer;
+}
+
+.modal__input {
+  padding: 1rem;
+  font-size: 1.5;
+  border: 2px solid rgba(0, 136, 169, 1);
+  border-radius: 0.3rem;
+  margin: 0.5rem 1rem;
+}
+
+.modal__input:focus {
+  background-color: lightblue;
+}
+
+.modal__btn {
+  color: white;
+  padding: 1rem;
+  border-radius: 0.3rem;
+  border: none;
+  background-color: rgba(0, 136, 169, 1);
+  margin: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.modal__btn:hover {
+  background-color: rgba(0, 136, 169, 0.7);
 }

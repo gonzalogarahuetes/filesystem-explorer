@@ -6,10 +6,12 @@ session_start();
 require_once("./user_actions.php");
 
 if (isset($_SESSION["fileInfo"])) {
-    $type = $_SESSION["fileInfo"]["type"];
+    $name = $_SESSION["fileInfo"]["name"];
+    $type = strtoupper($_SESSION["fileInfo"]["type"]);
     $size = $_SESSION["fileInfo"]["size"];
     $modified = $_SESSION["fileInfo"]["modified"];
     $created = $_SESSION["fileInfo"]["created"];
+    $shortName = $_SESSION["fileInfo"]["shortName"];
 }
 
 $title = "Index";
@@ -85,53 +87,57 @@ include(ROOT_PATH . "inc/_head.php");
             ?>
         </div>
     </section>
-    <section class="details">
-        <div class="details__title">
-            <i></i>
-            <p>Title</p>
-            <button class="details__btn--edit"><img class='fileIcon-medium' src="../../assets/icons/edit.svg"></button>
-            <button class="details__btn--delete"><img class='fileIcon-medium' src="../../assets/icons/delete.svg"></button>
-        </div>
-        <div class="details__content">
-            <p>Type</p>
-            <p><?= $type ? $type : "" ?></p>
-            <p>Size</p>
-            <p><?= $size ? $size : "" ?></p>
-            <p>Modified</p>
-            <p><?= $modified ? $modified : "" ?></p>
-            <p>Created</p>
-            <p><?= $created ? $created : "" ?></p>
-        </div>
-    </section>
+    <?php
+    if (isset($_SESSION["fileInfo"])) {
+        echo "
+                        <section class='details'>
+                            <div class='details__header'>
+                                <img class='fileIcon' src='./Icons/" .  ($type ? $type : '') . ".svg'>
+                                <p classname='details__name'>" . ($name ? $name : '') . "</p>
+                                <button type='button' data-open='modal1' class='details__btn--edit'><img class='fileIcon-medium' src='../../assets/icons/edit.svg'></button>
+                                <button class='details__btn--delete' onclick='location.href=\"./delete_file.php?file=$basePath/$name\"'><img class='fileIcon-medium' src='../../assets/icons/delete.svg' onclick='location.href=\"./delete_file.php?file=$basePath/$name\"'></button>
+                            </div>
+                            <div class='details__content'>
+                                <div class='details__flex'>
+                                    <p><strong>Type:</strong></p>
+                                    <p>" . ($type ? $type : '') . "</p>
+                                </div>
+                                <div class='details__flex'>
+                                    <p><strong>Size:</strong></p>
+                                    <p>" . ($size ? $size : '') . "</p>
+                                </div>
+                                <div class='details__flex'>
+                                    <p><strong>Modified:</strong></p>
+                                    <p>" . ($modified ? $modified : '') . "</p>
+                                </div>
+                                <div class='details__flex'>
+                                    <p><strong>Created:</strong></p>
+                                    <p>" . ($created ? $created : '') . "</p>
+                                </div>
+                            </div>
+                        </section>";
+    }
 
-    <!-- File Upload Modal  -->
-    <article class="modal__file" id="modal__file">
-        <div class="modal__content-file" id="modal__content-file">
-            <button id="button-close-file" class="modal__close-file">X</button>
-            <form
-                id="modal-form-file"
-                method="post"
-                enctype="multipart/form-data"
-            >
-                <div class="padding-1">
-                    <label for="fileUpload">Title :</label>
-                    <input
-                        type="file"
-                        id="file"
-                        name="fileUpload"
-                        value=""
-                        required
-                    />
-                </div>
-                <div class="padding-1">
-                    <button id="cancel-modal-file" class="button--small">
-                        Cancel
-                    </button>
-                    <button type="submit" class="button--small">Submit</button>
-                </div>
+    ?>
+    <div class="modal" id="modal1" data-animation="slideInOutLeft">
+        <div class="modal-dialog">
+            <header class="modal-header">
+                <h2 class="modal__title">RENAME FILE</h2>
+                <button class="close-modal" aria-label="close modal" data-close>
+                    ✕
+                </button>
+            </header>
+            <section class="modal-content">
+                <form action=<?= "./edit_file.php?file=./Files/" . $name ?> method="post" class="modal__form">
+                    <input type="text" class="modal__input" name="newName" placeholder=<?= $shortName ?> />
+                    <input class="modal__btn" type="submit" value="Edit">
                 </form>
+            </section>
+            <footer class="modal-footer">
+                Choose wisely a new name for your file
+            </footer>
         </div>
-    </article><!-- File Modal  -->
+    </div>
 </main>
 <script>
     <?php
@@ -139,4 +145,6 @@ include(ROOT_PATH . "inc/_head.php");
     ?>
 </script>
 </body>
+
+
 </html>
