@@ -21,7 +21,7 @@ include(ROOT_PATH . "inc/_head.php");
     <img class='fileIcon-large' src="../../assets/icons/bug.svg">
     <input type="search" class="header__search" placeholder="Search">
     <p class="header_welcome">Welcome, <?= $_SESSION["username"] ?></p>
-    <a href="../logout.php" class="log_out">Logout</a>
+    <a href="../logout.php" class="header__logout">Logout</a>
 </header>
 <main class="main">
     <section class="explorer">
