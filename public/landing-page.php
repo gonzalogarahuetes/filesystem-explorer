@@ -6,7 +6,7 @@ isset($_SESSION["username"]) ? header("Location: ./root") : "";
 $title = "Landing Page";
 include(ROOT_PATH . "inc/_head.php");
 ?>
-
+<main class="main">
     <div class="login_div">
         <form method="post" action="./login.php" class="login">
             <input type="text" class="login__username" placeholder="username" name="username">
@@ -14,6 +14,7 @@ include(ROOT_PATH . "inc/_head.php");
             <button type="submit" class="login_btn">Log in!</button>
         </form>
     </div>
+</main>
     </body>
 
 </html>

@@ -5,7 +5,8 @@ session_start();
 !$_SESSION["username"] ? header("Location: ../login.php") : "";
 require_once("./user_actions.php");
 
-$file = $_GET["file"];
+$getFile = $_GET["getFile"];
+echo $getFile;
 
 $title = "Index";
 include(ROOT_PATH . "inc/_head.php");
@@ -44,11 +45,11 @@ include(ROOT_PATH . "inc/_head.php");
         </div>
         <div class="content__folder">
             <img class='fileIcon' src='./Icons/folder.svg'>
-            <p class="content__folder-title"><?= $file ?></p>
+            <p class="content__folder-title"><?= $getFile ?></p>
         </div>
         <div class="content__list">
             <?php
-            $basePath = "./Files" . "/" . $file;
+            $basePath = $getFile;
             if (is_file($basePath)) {
                 $fileExtension = explode(".", $basePath);
                 $fileActualExt = strtolower(end($fileExtension));
@@ -58,7 +59,7 @@ include(ROOT_PATH . "inc/_head.php");
                 echo "
                                     <div class='display_folder'>
                                         <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
-                                        <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath' class='link'>$file</a></p>
+                                        <p class='folder1__element'><a href='./select-file-rightbar.php?file=$getFile' class='link'>$getFile</a></p>
                                         <p>$sizeOfFile</p>
                                         <p>$timeModified</p>
                                     </div>";
@@ -76,7 +77,7 @@ include(ROOT_PATH . "inc/_head.php");
                                 echo "
                                             <div class='display_folder'>
                                                 <img class='fileIcon' src='./Icons/folder.svg'>
-                                                <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
+                                                <p class='folder1__element'><a href='./select-file-rightbar.php?file=$v' class='link'>$v</a></p>
                                                 <p>$sizeOfFile</p>
                                                 <p>$timeModified</p>
                                             </div>";
@@ -87,7 +88,7 @@ include(ROOT_PATH . "inc/_head.php");
                         echo "
                                             <div class='display_folder'>
                                             <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
-                                                <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
+                                                <p class='folder1__element'><a href='./select-file-rightbar.php?file=$v' class='link'>$v</a></p>
                                                 <p>$sizeOfFile</p>
                                                 <p>$timeModified</p>
                                             </div>";
@@ -103,15 +104,38 @@ include(ROOT_PATH . "inc/_head.php");
     <section class="details">
         <div class="details__title">
             <i></i>
-            <p>Title</p>
+            <p><?= $file ?></p>
             <button class="details__btn--edit"><img class='fileIcon-medium' src="../../assets/icons/edit.svg"></button>
             <button class="details__btn--delete"><img class='fileIcon-medium' src="../../assets/icons/delete.svg"></button>
         </div>
         <div class="details__content">
-            <p>Type <span>PHP<span></p>
-            <p>Size <span>500Kb<span></p>
-            <p>Modified <span>12/01/2021<span></p>
-            <p>Created <span>1/01/2021<span></p>
+            <?php
+                $basePath = $getFile;
+                if (is_file($basePath)) {
+                    $fileExtension = explode(".", $basePath);
+                    $fileActualExt = strtolower(end($fileExtension));
+                    $sizeOfFile = filesize($basePath);
+                    $timeModified = date("F d Y", filemtime($basePath));
+                    echo "
+                                        <div class='display_folder'>
+                                            <p>Type: $fileActualExt<p>
+                                            <p>Name: $file</a></p>
+                                            <p>Size: $sizeOfFile</p>
+                                            <p>Modified: $timeModified</p>
+                                        </div>";
+                } 
+                if (is_dir($basePath)) {
+                    $sizeOfFile = get_folder_size($basePath . "/" . $v);
+                    $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
+                    echo "
+                                <div class='display_folder'>
+                                <p>Type: $fileActualExt<p>
+                                <p>Name: $file</a></p>
+                                <p>Size: $sizeOfFile</p>
+                                <p>Modified: $timeModified</p>
+                            </div>";
+                } 
+            ?>
         </div>
     </section>
 
