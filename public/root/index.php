@@ -32,7 +32,7 @@ include(ROOT_PATH . "inc/_head.php");
         <div class="explorer__folders">
             <div class="explorer__folders-root">
                 <img class='fileIcon' src='./Icons/folder.svg'>
-                <h3>/root</h3>
+                <h3>/<?php echo $_SESSION["username"] . "_root" ?></h3>
             </div>
             <?php
             $basePath = $_SESSION["username"] . "_root";

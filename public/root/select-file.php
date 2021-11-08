@@ -88,24 +88,6 @@ include(ROOT_PATH . "inc/_head.php");
             ?>
         </div>
     </section>
-<<<<<<< HEAD
-
-=======
-    <section class="details">
-        <div class="details__title">
-            <i></i>
-            <p>Title</p>
-            <button class="details__btn--edit"><img class='fileIcon-medium' src="../../assets/icons/edit.svg"></button>
-            <button class="details__btn--delete"><img class='fileIcon-medium' src="../../assets/icons/delete.svg"></button>
-        </div>
-        <div class="details__content">
-            <p>Type <span>PHP<span></p>
-            <p>Size <span>500Kb<span></p>
-            <p>Modified <span>12/01/2021<span></p>
-            <p>Created <span>1/01/2021<span></p>
-        </div>
-    </section>
->>>>>>> master
 </main>
 </body>
 
