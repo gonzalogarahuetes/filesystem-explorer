@@ -35,7 +35,7 @@ include(ROOT_PATH . "inc/_head.php");
                 <h3>/root</h3>
             </div>
             <?php
-            $basePath = "./Files";
+            $basePath = $_SESSION["username"] . "_root";
             function listFolderFiles($basePath)
             {
                 $items = scandir($basePath);
@@ -77,7 +77,6 @@ include(ROOT_PATH . "inc/_head.php");
         </div>
         <div class="content__list">
             <?php
-            $basePath = "./Files";
             $dirContent = scandir($basePath);
             foreach ($dirContent as $v) {
                 $fileExtension = explode(".", $v);

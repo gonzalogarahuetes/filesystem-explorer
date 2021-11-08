@@ -43,33 +43,49 @@ function convertBytes($bytes)
     } elseif (1024 <= $bytes && $bytes < 1048576) {
         $size = number_format($bytes / 1024, 2) . " Kb";
     } else {
-        $size = number_format($bytes / 1048576, 2) . " Mb";;
+        $size = number_format($bytes / 1048576, 2) . " Mb";
     }
     return $size;
 }
 
 function fileToTrash($file)
 {
-    session_start();
+    $explodePath = explode("root", __DIR__);
     $explodeSlash = explode("/", $file);
     $fileName = $explodeSlash[count($explodeSlash) - 1];
 
-    $explodePath = explode("root", __DIR__);
-
-    $newPath = $explodePath[0] . "trash\\" . $fileName;
-
+    if (is_dir($file)) {
+        foreach (glob($file) as $f) {
+            fileToTrash($f);
+        }
+        $newPath = $explodePath[0] . "trash\\" . $fileName;
+    } else {
+        $folderName = $explodeSlash[count($explodeSlash) - 2];
+        if ($folderName !== "Files") {
+            $newPath = $explodePath[0] . "trash\\" . $folderName . "\\" . $fileName;
+        } else {
+            $newPath = $explodePath[0] . "trash\\" . $fileName;
+        }
+    }
     rename($file, $newPath);
     header("Location: ./index.php");
 
+    session_start();
     if (isset($_SESSION["fileInfo"])) unset($_SESSION["fileInfo"]);
 }
 
 function deleteFile($file)
 {
+    if (is_dir($file)) {
+        foreach (glob($file) as $f) {
+            deleteFile($f);
+        }
+        rmdir($file);
+    } else {
+        unlink($file);
+    }
 
     session_start();
-
-    unlink($file);
 
     header("Location: ./index.php");
 

@@ -12,7 +12,7 @@ function login()
 
     if ($checkedUser === true) {
         $_SESSION["username"] = $username;
-        header("Location: ./root");
+        header("Location: ./root/");
     } elseif (!$checkedUser) {
         header("Location: ./landing-page.php?error=unregistered");
     } elseif ($checkedUser === "password") {
@@ -135,6 +135,7 @@ function signup()
     //fclose($usersJsonFile);
 
     $_SESSION["username"] = $username;
+    mkdir("./root/" . $username . "_root", 0777);
     header("Location: ./root");
 }
 
@@ -163,6 +164,8 @@ function checkSignUp($username, $password, $reppass, $email, $usersJsonFile)
     //case passwords unmatch
 
     if ($password !== $reppass && !isset($error)) $error = "unmatch";
+
+    //no errors
 
     if (!isset($error)) $error = "";
 
