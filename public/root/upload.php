@@ -1,3 +1,4 @@
 <?php
 require_once("./user_actions.php");
-upload();
+$realPath = $_GET["realPath"];
+upload($realPath);

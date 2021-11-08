@@ -1,12 +1,14 @@
 <?php
 require_once("../../config/app.php");
-
 session_start();
 !$_SESSION["username"] ? header("Location: ../login.php") : "";
 require_once("./user_actions.php");
 
 $getFile = $_GET["getFile"];
-echo $getFile;
+
+$fullPath = $_SERVER['REQUEST_URI'];
+$explodePath = explode('=', $fullPath);
+$realPath = end($explodePath);
 
 $title = "Index";
 include(ROOT_PATH . "inc/_head.php");
@@ -19,14 +21,18 @@ include(ROOT_PATH . "inc/_head.php");
 </header>
 <main class="main">
     <section class="explorer">
-        <form action="./new_folder.php" method="post" class="new-">
+        <form 
+            action=<?= "./new_folder.php?realPath=$realPath" ?>
+            method="post" 
+            class="new-"
+        >
             <input type="text" name="newFolder" class="explorer__new">
             <button type="submit" class="new-folder"> New Folder</button>
         </form>
         <div class="explorer__folders">
             <div class="explorer__folders-root">
                 <img class='fileIcon' src='./Icons/folder.svg'>
-                <h3><a href='./index.php'>/root</a></h3>
+                <h3><a href='./index.php'>/Files</a></h3>
             </div>
             <?php
             $basePath = "./Files";
@@ -40,12 +46,31 @@ include(ROOT_PATH . "inc/_head.php");
             <div class="guide__p-right">
                 <p class="guide__p">Size</p>
                 <p class="guide__p">Modified</p>
-                <button class="guide_upload"><img class='fileIcon-small' src="../../assets/icons/cloudup.svg"></i></button>
+                <button class="guide_upload" id="btn__upload"><img class='fileIcon-small' src="../../assets/icons/cloudup.svg"></i></button>
             </div>
         </div>
         <div class="content__folder">
             <img class='fileIcon' src='./Icons/folder.svg'>
-            <p class="content__folder-title"><?= $getFile ?></p>
+            <p class="content__folder-title">
+                <a href="<?Php echo create_url("/");?>">Files</a>
+                    /
+                <?php
+                $arrayPath = array();
+                $breakFullPath = explode("/", $getFile);
+                $currentIndex = "";
+                for ($i = 0; $i < count($breakFullPath); $i++) {
+                    $currentIndex = $currentIndex . $breakFullPath[$i] . "/";
+                    array_push($arrayPath, $currentIndex);
+                }
+                // print_r($arrayPath);
+                $arrayActual = array_slice($arrayPath, 2);
+
+                foreach ($arrayActual as $index => $c) {
+                        $n = basename($c);
+                        echo "<a href='./select-file-rightbar.php?getFile=$arrayActual[$index]'>" . $n . "/" . " " . "</a>";
+                }
+                ?>
+            </p>
         </div>
         <div class="content__list">
             <?php
@@ -59,11 +84,11 @@ include(ROOT_PATH . "inc/_head.php");
                 echo "
                                     <div class='display_folder'>
                                         <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
-                                        <p class='folder1__element'><a href='./select-file-rightbar.php?file=$getFile' class='link'>$getFile</a></p>
+                                        <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$getFile' class='link'>$getFile</a></p>
                                         <p>$sizeOfFile</p>
                                         <p>$timeModified</p>
                                     </div>";
-            } 
+            }
             if (is_dir($basePath)) {
                 $dirContent = scandir($basePath);
                 foreach ($dirContent as $v) {
@@ -77,7 +102,7 @@ include(ROOT_PATH . "inc/_head.php");
                                 echo "
                                             <div class='display_folder'>
                                                 <img class='fileIcon' src='./Icons/folder.svg'>
-                                                <p class='folder1__element'><a href='./select-file-rightbar.php?file=$v' class='link'>$v</a></p>
+                                                <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
                                                 <p>$sizeOfFile</p>
                                                 <p>$timeModified</p>
                                             </div>";
@@ -88,7 +113,7 @@ include(ROOT_PATH . "inc/_head.php");
                         echo "
                                             <div class='display_folder'>
                                             <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
-                                                <p class='folder1__element'><a href='./select-file-rightbar.php?file=$v' class='link'>$v</a></p>
+                                                <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
                                                 <p>$sizeOfFile</p>
                                                 <p>$timeModified</p>
                                             </div>";
@@ -104,7 +129,13 @@ include(ROOT_PATH . "inc/_head.php");
     <section class="details">
         <div class="details__title">
             <i></i>
-            <p><?= $file ?></p>
+            <p>
+                <?php
+                    $fileExplode = explode("/", $getFile);
+                    $fileActualName = strtolower(end($fileExplode));
+                    echo $fileActualName;
+                ?>
+            </p>
             <button class="details__btn--edit"><img class='fileIcon-medium' src="../../assets/icons/edit.svg"></button>
             <button class="details__btn--delete"><img class='fileIcon-medium' src="../../assets/icons/delete.svg"></button>
         </div>
@@ -117,9 +148,9 @@ include(ROOT_PATH . "inc/_head.php");
                     $sizeOfFile = filesize($basePath);
                     $timeModified = date("F d Y", filemtime($basePath));
                     echo "
-                                        <div class='display_folder'>
+                                        <div'>
                                             <p>Type: $fileActualExt<p>
-                                            <p>Name: $file</a></p>
+                                            <p>Name: $fileActualName</a></p>
                                             <p>Size: $sizeOfFile</p>
                                             <p>Modified: $timeModified</p>
                                         </div>";
@@ -128,9 +159,9 @@ include(ROOT_PATH . "inc/_head.php");
                     $sizeOfFile = get_folder_size($basePath . "/" . $v);
                     $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
                     echo "
-                                <div class='display_folder'>
-                                <p>Type: $fileActualExt<p>
-                                <p>Name: $file</a></p>
+                                <div'>
+                                <p>Type: folder<p>
+                                <p>Name: $fileActualName</a></p>
                                 <p>Size: $sizeOfFile</p>
                                 <p>Modified: $timeModified</p>
                             </div>";
@@ -147,7 +178,7 @@ include(ROOT_PATH . "inc/_head.php");
                 id="modal-form-file"
                 method="post"
                 enctype="multipart/form-data"
-                action="./upload.php"
+                action=<?= "./upload.php?realPath=$realPath" ?>
             >
                 <div class="padding-1">
                     <label for="fileUpload">Title :</label>

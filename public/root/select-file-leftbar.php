@@ -7,6 +7,10 @@ require_once("./user_actions.php");
 
 $file = $_GET["file"];
 
+$fullPath = $_SERVER['REQUEST_URI'];
+$explodePath = explode('=', $fullPath);
+$realPath = end($explodePath);
+
 $title = "Index";
 include(ROOT_PATH . "inc/_head.php");
 ?>
@@ -18,14 +22,18 @@ include(ROOT_PATH . "inc/_head.php");
 </header>
 <main class="main">
     <section class="explorer">
-        <form action="./new_folder.php" method="post" class="new-">
+        <form 
+            action=<?= "./new_folder.php?realPath=$realPath" ?>
+            method="post" 
+            class="new-"
+        >
             <input type="text" name="newFolder" class="explorer__new">
             <button type="submit" class="new-folder"> New Folder</button>
         </form>
         <div class="explorer__folders">
             <div class="explorer__folders-root">
                 <img class='fileIcon' src='./Icons/folder.svg'>
-                <h3><a href='./index.php'>/root</a></h3>
+                <h3><a href='./index.php'>/Files</a></h3>
             </div>
             <?php
             $basePath = "./Files";
@@ -39,64 +47,66 @@ include(ROOT_PATH . "inc/_head.php");
             <div class="guide__p-right">
                 <p class="guide__p">Size</p>
                 <p class="guide__p">Modified</p>
-                <button class="guide_upload"><img class='fileIcon-small' src="../../assets/icons/cloudup.svg"></i></button>
+                <button class="guide_upload" id="btn__upload"><img class='fileIcon-small' src="../../assets/icons/cloudup.svg"></i></button>
             </div>
         </div>
         <div class="content__folder">
             <img class='fileIcon' src='./Icons/folder.svg'>
-            <p class="content__folder-title"><?= $file ?></p>
+            <p class="content__folder-title"><a href='./index.php'>/Files</a>/<a href="<?Php echo create_url("/select-file-leftbar.php", ["file" => $file]);?>"><?php echo basename($file) ?></a></p>
         </div>
         <div class="content__list">
             <?php
-            $basePath = "./Files" . "/" . $file;
-            if (is_file($basePath)) {
-                $fileExtension = explode(".", $basePath);
-                $fileActualExt = strtolower(end($fileExtension));
-                // echo $fileExtension[2];
-                $sizeOfFile = filesize($basePath);
-                $timeModified = date("F d Y", filemtime($basePath));
-                echo "
-                                    <div class='display_folder'>
-                                        <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
-                                        <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath' class='link'>$file</a></p>
-                                        <p>$sizeOfFile</p>
-                                        <p>$timeModified</p>
-                                    </div>";
-            } 
-            if (is_dir($basePath)) {
-                $dirContent = scandir($basePath);
-                foreach ($dirContent as $v) {
-                    $fileExtension = explode(".", $v);
+            $basePath = $file;
+            function listFolderDetails($basePath) {
+                if (is_file($basePath)) {
+                    $fileExtension = explode(".", $basePath);
                     $fileActualExt = strtolower(end($fileExtension));
-                    $sizeOfFile = get_folder_size($basePath . "/" . $v);
-                    $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
-                    if (!is_file($basePath . "/" . $v)) {
-                        if (!($v == '.')) {
-                            if (!($v == '..')) {
-                                echo "
-                                            <div class='display_folder'>
-                                                <img class='fileIcon' src='./Icons/folder.svg'>
-                                                <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
-                                                <p>$sizeOfFile</p>
-                                                <p>$timeModified</p>
-                                            </div>";
+                    $sizeOfFile = filesize($basePath);
+                    $timeModified = date("F d Y", filemtime($basePath));
+                    $name = basename($basePath);
+                    echo "
+                                        <div class='display_folder'>
+                                            <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
+                                            <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath' class='link'>$name</a></p>
+                                            <p>$sizeOfFile</p>
+                                            <p>$timeModified</p>
+                                        </div>";
+                } 
+                if (is_dir($basePath)) {
+                    $dirContent = scandir($basePath);
+                    foreach ($dirContent as $v) {
+                        $fileExtension = explode(".", $v);
+                        $fileActualExt = strtolower(end($fileExtension));
+                        $sizeOfFile = get_folder_size($basePath . "/" . $v);
+                        $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
+                        if (!is_file($basePath . "/" . $v)) {
+                            if (!($v == '.')) {
+                                if (!($v == '..')) {
+                                    echo "
+                                                <div class='display_folder'>
+                                                    <img class='fileIcon' src='./Icons/folder.svg'>
+                                                    <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
+                                                    <p>$sizeOfFile</p>
+                                                    <p>$timeModified</p>
+                                                </div>";
+                                }
                             }
                         }
-                    }
-                    if (is_file($basePath . "/" . $v)) {
-                        echo "
-                                            <div class='display_folder'>
-                                            <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
-                                                <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
-                                                <p>$sizeOfFile</p>
-                                                <p>$timeModified</p>
-                                            </div>";
-
+                        if (is_file($basePath . "/" . $v)) {
+                            echo "
+                                                <div class='display_folder'>
+                                                <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
+                                                    <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
+                                                    <p>$sizeOfFile</p>
+                                                    <p>$timeModified</p>
+                                                </div>";
+    
+                        }
                     }
                 }
             }
 
-            
+            listFolderDetails($basePath);
             ?>
         </div>
     </section>
@@ -108,10 +118,10 @@ include(ROOT_PATH . "inc/_head.php");
             <button class="details__btn--delete"><img class='fileIcon-medium' src="../../assets/icons/delete.svg"></button>
         </div>
         <div class="details__content">
-            <p>Type <span>PHP<span></p>
+            <!-- <p>Type <span>PHP<span></p>
             <p>Size <span>500Kb<span></p>
             <p>Modified <span>12/01/2021<span></p>
-            <p>Created <span>1/01/2021<span></p>
+            <p>Created <span>1/01/2021<span></p> -->
         </div>
     </section>
 
@@ -123,7 +133,7 @@ include(ROOT_PATH . "inc/_head.php");
                 id="modal-form-file"
                 method="post"
                 enctype="multipart/form-data"
-                action="./upload.php"
+                action=<?= "./upload.php?realPath=$realPath" ?>
             >
                 <div class="padding-1">
                     <label for="fileUpload">Title :</label>
