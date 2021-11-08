@@ -88,6 +88,9 @@ include(ROOT_PATH . "inc/_head.php");
             ?>
         </div>
     </section>
+<<<<<<< HEAD
+
+=======
     <section class="details">
         <div class="details__title">
             <i></i>
@@ -102,6 +105,7 @@ include(ROOT_PATH . "inc/_head.php");
             <p>Created <span>1/01/2021<span></p>
         </div>
     </section>
+>>>>>>> master
 </main>
 </body>
 
