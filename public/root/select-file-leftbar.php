@@ -5,11 +5,13 @@ session_start();
 !$_SESSION["username"] ? header("Location: ../login.php") : "";
 require_once("./user_actions.php");
 
+$basePath = $_SESSION["username"] . "_root";
+
 $file = $_GET["file"];
 
-$fullPath = $_SERVER['REQUEST_URI'];
-$explodePath = explode('=', $fullPath);
-$realPath = end($explodePath);
+// $fullPath = $_SERVER['REQUEST_URI'];
+// $explodePath = explode('=', $fullPath);
+// $realPath = end($explodePath);
 
 $title = "Index";
 include(ROOT_PATH . "inc/_head.php");
@@ -23,7 +25,7 @@ include(ROOT_PATH . "inc/_head.php");
 <main class="main">
     <section class="explorer">
         <form 
-            action=<?= "./new_folder.php?realPath=$realPath" ?>
+            action=<?= "./new_folder.php?realPath=$basePath" ?>
             method="post" 
             class="new-"
         >
@@ -33,10 +35,9 @@ include(ROOT_PATH . "inc/_head.php");
         <div class="explorer__folders">
             <div class="explorer__folders-root">
                 <img class='fileIcon' src='./Icons/folder.svg'>
-                <h3><a href='./index.php'>/Files</a></h3>
+                <h3><a href='./index.php'>/<?= $basePath ?></a></h3>
             </div>
             <?php
-            $basePath = "./Files";
             listFolderFiles($basePath);
             ?>
         </div>
@@ -52,7 +53,7 @@ include(ROOT_PATH . "inc/_head.php");
         </div>
         <div class="content__folder">
             <img class='fileIcon' src='./Icons/folder.svg'>
-            <p class="content__folder-title"><a href='./index.php'>/Files</a>/<a href="<?Php echo create_url("/select-file-leftbar.php", ["file" => $file]);?>"><?php echo basename($file) ?></a></p>
+            <p class="content__folder-title"><a href='./index.php'>/<?= $basePath ?></a>/<a href="<?Php echo create_url("/select-file-leftbar.php", ["file" => $file]);?>"><?php echo basename($file) ?></a></p>
         </div>
         <div class="content__list">
             <?php
@@ -84,7 +85,7 @@ include(ROOT_PATH . "inc/_head.php");
                 id="modal-form-file"
                 method="post"
                 enctype="multipart/form-data"
-                action=<?= "./upload.php?realPath=$realPath" ?>
+                action=<?= "./upload.php?realPath=$basePath" ?>
             >
                 <div class="padding-1">
                     <label for="fileUpload">Title :</label>
