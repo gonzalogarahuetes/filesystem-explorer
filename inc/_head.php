@@ -6,11 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?></title>
-    <link rel="stylesheet" href="../../assets/css/styles.css">
+    <script src="../../assets/js/modal-content.js" defer></script>
     <script src="../../assets/js/modal_triggers.js" defer></script>
     <style>
         <?php
-        include(ROOT_PATH . "assets/css/styles.css");
+            include(ROOT_PATH . "assets/css/styles.css");
         ?>
     </style>
 </head>
