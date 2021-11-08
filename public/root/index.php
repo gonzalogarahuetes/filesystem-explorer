@@ -167,7 +167,7 @@ include(ROOT_PATH . "inc/_head.php");
                 </button>
             </header>
             <section class="modal-content">
-                <form action=<?= "./edit_file.php?file=./Files/" . $name ?> method="post" class="modal__form">
+                <form action=<?= "./edit_file.php?file=./" . $basePath . "/" . $name ?> method="post" class="modal__form">
                     <input type="text" class="modal__input" name="newName" placeholder=<?= $shortName ?> />
                     <input class="modal__btn" type="submit" value="Edit">
                 </form>

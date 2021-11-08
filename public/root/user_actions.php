@@ -2,8 +2,11 @@
 
 function newFolder()
 {
+    session_start();
+
+    $username = $_SESSION["username"];
     $folderName = $_POST["newFolder"];
-    $path = "./Files/$folderName";
+    $path = "./$username/$folderName";
 
     mkdir($path, 0777, true);
 
@@ -50,6 +53,8 @@ function convertBytes($bytes)
 
 function fileToTrash($file)
 {
+    session_start();
+
     $explodePath = explode("root", __DIR__);
     $explodeSlash = explode("/", $file);
     $fileName = $explodeSlash[count($explodeSlash) - 1];
@@ -61,7 +66,7 @@ function fileToTrash($file)
         $newPath = $explodePath[0] . "trash\\" . $fileName;
     } else {
         $folderName = $explodeSlash[count($explodeSlash) - 2];
-        if ($folderName !== "Files") {
+        if ($folderName !== $_SESSION["username"]) {
             $newPath = $explodePath[0] . "trash\\" . $folderName . "\\" . $fileName;
         } else {
             $newPath = $explodePath[0] . "trash\\" . $fileName;
@@ -70,7 +75,6 @@ function fileToTrash($file)
     rename($file, $newPath);
     header("Location: ./index.php");
 
-    session_start();
     if (isset($_SESSION["fileInfo"])) unset($_SESSION["fileInfo"]);
 }
 
@@ -98,7 +102,7 @@ function editFile($file, $newName)
     $explodeDot = explode(".", $file);
     $extension = "." . $explodeDot[count($explodeDot) - 1];
 
-    $newCompleteName = "./Files/" . $newName . $extension;
+    $newCompleteName = "./" . $_SESSION["username"] . "_root/" . $newName . $extension;
 
     rename($file, $newCompleteName);
 
