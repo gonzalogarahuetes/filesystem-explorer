@@ -1,0 +1,80 @@
+/*----------------------------------------LOGIN---------------------------------------*/
+
+.darkbg {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  text-align: center;
+  height: 100vh;
+  width: 100vw;
+  background-image: url("../img/dark-background-images-5561-5821-hd-wallpapers.jpg");
+  background-repeat: no-repeat;
+  padding: 3rem;
+}
+
+.login__div {
+  background-color: white;
+  margin: auto;
+  height: 15rem;
+  width: 35%;
+  padding: 2rem;
+  border-radius: 0.3rem;
+  border: 1.5px solid rgba(0, 136, 169, 1);
+  box-shadow: 5px 10px 18px rgba(0, 136, 169, 0.5);
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+  text-align: center;
+}
+
+.login__username,
+.login__pass {
+  outline: none;
+  padding: 0.5rem;
+  border-radius: 0.3rem;
+  background-color: lightblue;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.login__username:focus,
+.login__pass:focus {
+  background-color: lightblue;
+  color: white;
+}
+
+.login__username::placeholder,
+.login__pass::placeholder {
+  color: rgba(0, 136, 169, 1);
+}
+
+.login__btn {
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.3rem;
+  font-size: 1.5rem;
+  background-color: rgba(0, 136, 169, 1);
+  color: white;
+}
+
+.login__btn:hover {
+  background-color: rgba(0, 136, 169, 0.6);
+}
+
+.login__title {
+  color: white;
+  font-size: 4rem;
+  margin: auto;
+  text-shadow: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff,
+    0 0 42px rgba(0, 136, 169, 1), 0 0 82px rgba(0, 136, 169, 1),
+    0 0 92px rgba(0, 136, 169, 1), 0 0 102px rgba(0, 136, 169, 1),
+    0 0 151px rgba(0, 136, 169, 1);
+}
+
+.login__subtitle {
+  color: white;
+  font-size: 2rem;
+}

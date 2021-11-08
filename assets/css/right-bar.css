@@ -1,0 +1,57 @@
+.details {
+  padding: 10px 20px;
+  width: 20%;
+}
+
+.details__header {
+  display: flex;
+  padding: 30px 20px;
+  border-bottom: 1px solid #8b8a8b;
+  align-items: center;
+}
+
+.details__header p {
+  margin-right: 20px;
+}
+
+.details__content {
+  margin-top: 20px;
+  padding: 15px;
+}
+
+.details__content p {
+  margin: 5px 0px;
+  padding: 10px;
+}
+
+.details__flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+.details__btn--edit {
+  cursor: pointer;
+  padding: 0.2rem;
+  background-color: lightblue;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 136, 169, 1);
+  margin: 0 1rem;
+}
+
+.details__btn--edit:hover {
+  background-color: rgba(0, 136, 169, 1);
+  border: 1.5px solid lightblue;
+}
+
+.details__btn--delete {
+  cursor: pointer;
+  padding: 0.3rem;
+  background-color: rgba(0, 136, 169, 1);
+  border-radius: 50%;
+  border: 1.5px solid white;
+}
+
+.details__btn--delete:hover {
+  background-color: lightblue;
+  border: 1.5px solid rgba(0, 136, 169, 1);
+}
