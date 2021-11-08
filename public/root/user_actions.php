@@ -122,6 +122,55 @@ function displayInfoParentFolder($basePath) {
         }
 }
 
+function listFolderDetails($basePath) {
+    if (is_file($basePath)) {
+        $fileExtension = explode(".", $basePath);
+        $fileActualExt = strtolower(end($fileExtension));
+        $sizeOfFile = filesize($basePath);
+        $timeModified = date("F d Y", filemtime($basePath));
+        $name = basename($basePath);
+        echo "
+                            <div class='display_folder'>
+                                <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
+                                <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath' class='link'>$name</a></p>
+                                <p>$sizeOfFile</p>
+                                <p>$timeModified</p>
+                            </div>";
+    } 
+    if (is_dir($basePath)) {
+        $dirContent = scandir($basePath);
+        foreach ($dirContent as $v) {
+            $fileExtension = explode(".", $v);
+            $fileActualExt = strtolower(end($fileExtension));
+            $sizeOfFile = get_folder_size($basePath . "/" . $v);
+            $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
+            if (!is_file($basePath . "/" . $v)) {
+                if (!($v == '.')) {
+                    if (!($v == '..')) {
+                        echo "
+                                    <div class='display_folder'>
+                                        <img class='fileIcon' src='./Icons/folder.svg'>
+                                        <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
+                                        <p>$sizeOfFile</p>
+                                        <p>$timeModified</p>
+                                    </div>";
+                    }
+                }
+            }
+            if (is_file($basePath . "/" . $v)) {
+                echo "
+                                    <div class='display_folder'>
+                                    <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
+                                        <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
+                                        <p>$sizeOfFile</p>
+                                        <p>$timeModified</p>
+                                    </div>";
+
+            }
+        }
+    }
+}
+
 function get_folder_size($folder) {
     $total_size = 0;
     if (is_file($folder)) {

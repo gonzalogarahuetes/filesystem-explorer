@@ -125,6 +125,9 @@ include(ROOT_PATH . "inc/_head.php");
                     </button>
                     <button type="submit" name="submit" class="button--small">Submit</button>
                 </div>
+            </form>
+        </div>
+    </article>
     
     <div class="modal" id="modal1" data-animation="slideInOutLeft">
         <div class="modal-dialog">
