@@ -15,7 +15,6 @@
 .login__div {
   background-color: white;
   margin: auto;
-  height: 15rem;
   width: 35%;
   padding: 2rem;
   border-radius: 0.3rem;
@@ -30,24 +29,21 @@
   text-align: center;
 }
 
-.login__username,
-.login__pass {
+.login__input {
   outline: none;
   padding: 0.5rem;
   border-radius: 0.3rem;
   background-color: lightblue;
-  color: white;
+  color: black;
   font-size: 1.2rem;
 }
 
-.login__username:focus,
-.login__pass:focus {
-  background-color: lightblue;
+.login__input:focus {
+  background-color: rgba(0, 136, 169, 1);
   color: white;
 }
 
-.login__username::placeholder,
-.login__pass::placeholder {
+.login__input::placeholder {
   color: rgba(0, 136, 169, 1);
 }
 
@@ -77,4 +73,57 @@
 .login__subtitle {
   color: white;
   font-size: 2rem;
+}
+
+.login__notlogged {
+  color: white;
+  font-size: 1.5rem;
+}
+
+.signup {
+  text-decoration: none;
+  color: lightblue;
+}
+
+.signup:hover {
+  text-shadow: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff,
+    0 0 42px rgba(0, 136, 169, 1), 0 0 82px rgba(0, 136, 169, 1),
+    0 0 92px rgba(0, 136, 169, 1), 0 0 102px rgba(0, 136, 169, 1),
+    0 0 151px rgba(0, 136, 169, 1);
+}
+
+.login__error {
+  margin: auto;
+  padding: 0.75rem;
+  width: 35%;
+  border: 1px solid rgba(241, 6, 6, 0.81);
+  background-color: rgba(220, 17, 1, 0.16);
+  box-shadow: 0px 0px 2px #ff0303;
+  color: #ff0303;
+  text-shadow: 2px 1px #00040a;
+  transition: 0.5s;
+  font-size: 1.2rem;
+}
+
+.login__error:hover {
+  background-color: rgba(220, 17, 1, 0.33);
+  transition: 0.5s;
+}
+
+.login__info {
+  margin: auto;
+  padding: 0.75rem;
+  width: 35%;
+  font-size: 1.2rem;
+  border: 1px solid rgba(36, 241, 6, 0.46);
+  background-color: rgba(7, 149, 66, 0.12156862745098039);
+  box-shadow: 0px 0px 2px #259c08;
+  color: #0ad406;
+  text-shadow: 2px 1px #00040a;
+  transition: 0.5s;
+}
+
+.login__info:hover {
+  background-color: rgba(7, 149, 66, 0.35);
+  transition: 0.5s;
 }

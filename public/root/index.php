@@ -35,9 +35,13 @@ include(ROOT_PATH . "inc/_head.php");
                 <h3>/root</h3>
             </div>
             <?php
-            $basePath = "./Files";
+            $basePath = $_SESSION["username"] . "_root";
             listFolderFiles($basePath);
             ?>
+            <div class="explorer__folders-root">
+                <img class='fileIcon' src='./Icons/folder.svg'>
+                <h3><a href="./file-to-trash.php">/trash</a></h3>
+            </div>
         </div>
     </section>
     <section class="content">
@@ -55,14 +59,12 @@ include(ROOT_PATH . "inc/_head.php");
         </div>
         <div class="content__list">
             <?php
-            $basePath = "./Files";
-            $newBasePath = $basePath;
-            $dirContent = scandir($newBasePath);
+            $dirContent = scandir($basePath);
             foreach ($dirContent as $v) {
                 $fileExtension = explode(".", $v);
-                $sizeOfFile = get_folder_size($newBasePath . "/" . $v);
-                $timeModified = date("F d Y", filemtime($newBasePath . "/" . $v));
-                if (!is_file($newBasePath . "/" . $v)) {
+                $sizeOfFile = get_folder_size($basePath . "/" . $v);
+                $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
+                if (!is_file($basePath . "/" . $v)) {
                     if (!($v == '.')) {
                         if (!($v == '..')) {
                             echo "
@@ -128,7 +130,7 @@ include(ROOT_PATH . "inc/_head.php");
                 </button>
             </header>
             <section class="modal-content">
-                <form action=<?= "./edit_file.php?file=./Files/" . $name ?> method="post" class="modal__form">
+                <form action=<?= "./edit_file.php?file=./" . $basePath . "/" . $name ?> method="post" class="modal__form">
                     <input type="text" class="modal__input" name="newName" placeholder=<?= $shortName ?> />
                     <input class="modal__btn" type="submit" value="Edit">
                 </form>

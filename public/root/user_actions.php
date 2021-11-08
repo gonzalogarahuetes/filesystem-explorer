@@ -2,8 +2,11 @@
 
 function newFolder()
 {
+    session_start();
+
+    $username = $_SESSION["username"];
     $folderName = $_POST["newFolder"];
-    $path = "./Files/$folderName";
+    $path = "./" . $username . "_root" . "/" . $folderName;
 
     mkdir($path, 0777, true);
 
@@ -43,15 +46,51 @@ function convertBytes($bytes)
     } elseif (1024 <= $bytes && $bytes < 1048576) {
         $size = number_format($bytes / 1024, 2) . " Kb";
     } else {
-        $size = number_format($bytes / 1048576, 2) . " Mb";;
+        $size = number_format($bytes / 1048576, 2) . " Mb";
     }
     return $size;
 }
 
-function deleteFile($file)
+function fileToTrash($file)
 {
     session_start();
-    unlink($file);
+
+    $explodePath = explode("root", __DIR__);
+    $explodeSlash = explode("/", $file);
+    $fileName = $explodeSlash[count($explodeSlash) - 1];
+
+    if (is_dir($file)) {
+        foreach (glob($file) as $f) {
+            fileToTrash($f);
+        }
+        $newPath = $explodePath[0] . "trash\\" . $fileName;
+    } else {
+        $folderName = $explodeSlash[count($explodeSlash) - 2];
+        if ($folderName !== $_SESSION["username"]) {
+            $newPath = $explodePath[0] . "trash\\" . $folderName . "\\" . $fileName;
+        } else {
+            $newPath = $explodePath[0] . "trash\\" . $fileName;
+        }
+    }
+    rename($file, $newPath);
+    header("Location: ./index.php");
+
+    if (isset($_SESSION["fileInfo"])) unset($_SESSION["fileInfo"]);
+}
+
+function deleteFile($file)
+{
+    if (is_dir($file)) {
+        foreach (glob($file) as $f) {
+            deleteFile($f);
+        }
+        rmdir($file);
+    } else {
+        unlink($file);
+    }
+
+    session_start();
+
     header("Location: ./index.php");
 
     if (isset($_SESSION["fileInfo"])) unset($_SESSION["fileInfo"]);
@@ -63,7 +102,7 @@ function editFile($file, $newName)
     $explodeDot = explode(".", $file);
     $extension = "." . $explodeDot[count($explodeDot) - 1];
 
-    $newCompleteName = "./Files/" . $newName . $extension;
+    $newCompleteName = "./" . $_SESSION["username"] . "_root/" . $newName . $extension;
 
     rename($file, $newCompleteName);
 
