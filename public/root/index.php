@@ -224,9 +224,6 @@ include(ROOT_PATH . "inc/_head.php");
                         </section>";
     }
     ?>
-    <?php
-
-    ?>
     <!-- File Upload Modal  -->
     <article class="modal__file" id="modal__file">
         <div class="modal__content-file" id="modal__content-file">

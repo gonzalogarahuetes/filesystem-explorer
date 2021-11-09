@@ -360,15 +360,3 @@ function displayDetails($basePath) {
     }
 }
 
-// Search item
-function searchItem($basePath, $input) {
-    $searchArray = array();
-    $list = new RecursiveDirectoryIterator($basePath);
-    foreach(new RecursiveIteratorIterator($list) as $file) {
-        if (strpos($file, $input) !== false) {
-            // echo $file . "<br/> \n";
-            array_push($searchArray, $file);
-        }
-    }
-    return $searchArray;
-}
