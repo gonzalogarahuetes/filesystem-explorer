@@ -5,6 +5,7 @@
 
 .details__header {
   display: flex;
+  flex-wrap: wrap;
   padding: 30px 20px;
   border-bottom: 1px solid #8b8a8b;
   align-items: center;
