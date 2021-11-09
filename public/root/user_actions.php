@@ -210,23 +210,29 @@ function listFolderDetails($basePath) {
 }
 
 function get_folder_size($folder) {
-    $total_size = 0;
+    $count_size = 0;
+    $count = 0;
+
     if (is_file($folder)) {
-        $total_size = $total_size + filesize($folder);
+        $count_size = $count_size + filesize($folder);
     }
+
     if (is_dir($folder)) {
         $files = scandir($folder);
-            foreach ($files as $file) {
-                if ($file === '.' or $file === '..') {
-                    continue;
-                } else {
-                    $path = $folder . '/' . $file;
-                    $total_size = $total_size + filesize($path);
-                    get_folder_size($path);
+        foreach ($files as $key => $file) {
+            if ($file != ".." && $file != ".") {
+                if (is_dir($folder . "/" . $file)) {
+                    $new_folderSize = get_folder_size($folder . "/" . $file);
+                    $count_size = $count_size + $new_folderSize;
+                } else if (is_file($folder . "/" . $file)) {
+                    $count_size = $count_size + filesize($folder . "/" . $file);
+                    $count++;
                 }
             }
         }
-    return $total_size;
+
+    }
+    return $count_size;
 }
 
 // Upload files
@@ -352,4 +358,17 @@ function displayDetails($basePath) {
                 </div>
             </div>";
     }
+}
+
+// Search item
+function searchItem($basePath, $input) {
+    $searchArray = array();
+    $list = new RecursiveDirectoryIterator($basePath);
+    foreach(new RecursiveIteratorIterator($list) as $file) {
+        if (strpos($file, $input) !== false) {
+            // echo $file . "<br/> \n";
+            array_push($searchArray, $file);
+        }
+    }
+    return $searchArray;
 }

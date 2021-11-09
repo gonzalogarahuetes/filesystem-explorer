@@ -20,10 +20,14 @@ $realPath = $basePath;
 
 $title = "Index";
 include(ROOT_PATH . "inc/_head.php");
+
 ?>
 <header class="header">
     <img class='fileIcon-large' src="../../assets/icons/bug.svg">
-    <input type="search" class="header__search" placeholder="Search">
+    <form action="./search.php" method="post">
+        <input type="search" class="header__search" placeholder="Search" name="search">
+        <input type="submit" name="submit" value="Submit" />
+    </form>
     <p class="header_welcome">Welcome, <?= $_SESSION["username"] ?></p>
     <a href="../logout.php" class="header__logout">Logout</a>
 </header>
@@ -219,6 +223,8 @@ include(ROOT_PATH . "inc/_head.php");
                             <button class='details__preview' id='btn-show'>Preview</button>
                         </section>";
     }
+    ?>
+    <?php
 
     ?>
     <!-- File Upload Modal  -->
