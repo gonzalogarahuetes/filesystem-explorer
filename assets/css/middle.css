@@ -48,6 +48,12 @@
 
 .content__folder-title {
   font-size: 20px;
+  text-decoration: none;
+  color: rgba(0, 136, 169, 1);
+}
+
+.content__folder-title:hover {
+  color: rgba(0, 136, 169, 0.7);
 }
 
 .display_folder {

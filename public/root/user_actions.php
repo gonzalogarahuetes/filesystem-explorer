@@ -17,26 +17,69 @@ function newFolder($realPath)
 function selectFile($file)
 {
     session_start();
+    $_SESSION["showing-trash"] = false;
+    $explodeSlash = explode("/", $file);
+    $modified = date("F d Y", filemtime($file));
+    $created = date("F d Y", filectime($file));
 
     if (is_dir($file)) {
-        unset($_SESSION["fileInfo"]);
+        $size = convertBytes(folderSize($file));
+        $dirName = $explodeSlash[count($explodeSlash) - 1];
+
+        $fileInfo = array("path" => $file, "name" => $dirName, "type" => "Folder", "size" => $size, "modified" => $modified, "created" => $created, "shortName" =>  $dirName);
     } else {
-        $explodeDot = explode(".", $file);
-        $explodeSlash = explode("/", $file);
-        $doubleExplode = explode("/", $explodeDot[count($explodeDot) - 2]);
-        $type = $explodeDot[count($explodeDot) - 1];
-        $shortName = $doubleExplode[count($doubleExplode) - 1];
-        $name = $explodeSlash[count($explodeSlash) - 1];
-        $bytes = filesize($file);
-        $size = convertBytes($bytes);
-        $modified = date("F d Y", filemtime($file));
-        $created = date("F d Y", filectime($file));
-
-        $fileInfo = array("name" => $name, "type" => $type, "size" => $size, "modified" => $modified, "created" => $created, "shortName" =>  $shortName);
-
-        $_SESSION["fileInfo"] = $fileInfo;
+        $fileInfo = getFileInfo($file);
     }
+    $_SESSION["fileInfo"] = $fileInfo;
     header("Location: ./index.php");
+}
+
+function selectFileTrash($file)
+{
+    session_start();
+    $explodeSlash = explode("/", $file);
+    $modified = date("F d Y", filemtime($file));
+    $created = date("F d Y", filectime($file));
+
+    if (is_dir($file)) {
+        $size = convertBytes(folderSize($file));
+        $dirName = $explodeSlash[count($explodeSlash) - 1];
+
+        $fileInfo = array("path" => $file, "name" => $dirName, "type" => "Folder", "size" => $size, "modified" => $modified, "created" => $created, "shortName" =>  $dirName);
+    } else {
+        $fileInfo = getFileInfo($file);
+    }
+    $_SESSION["fileInfoTrash"] = $fileInfo;
+    header("Location: ./index.php");
+}
+
+function getFileInfo($file)
+{
+    $explodeDot = explode(".", $file);
+    $explodeSlash = explode("/", $file);
+    $doubleExplode = explode("/", $explodeDot[count($explodeDot) - 2]);
+    $modified = date("F d Y", filemtime($file));
+    $created = date("F d Y", filectime($file));
+    $type = $explodeDot[count($explodeDot) - 1];
+    $shortName = $doubleExplode[count($doubleExplode) - 1];
+    $name = $explodeSlash[count($explodeSlash) - 1];
+    $bytes = filesize($file);
+    $size = convertBytes($bytes);
+
+    $fileInfo = array("path" => $file, "name" => $name, "type" => $type, "size" => $size, "modified" => $modified, "created" => $created, "shortName" =>  $shortName);
+
+    return $fileInfo;
+}
+
+function folderSize($dir)
+{
+    $size = 0;
+
+    foreach (glob(rtrim($dir, '/') . '/*', GLOB_NOSORT) as $each) {
+        $size += is_file($each) ? filesize($each) : folderSize($each);
+    }
+
+    return $size;
 }
 
 function convertBytes($bytes)
@@ -65,12 +108,14 @@ function fileToTrash($file)
         }
         $newPath = $explodePath[0] . "trash\\" . $fileName;
     } else {
-        $folderName = $explodeSlash[count($explodeSlash) - 2];
-        if ($folderName !== $_SESSION["username"]) {
-            $newPath = $explodePath[0] . "trash\\" . $folderName . "\\" . $fileName;
-        } else {
-            $newPath = $explodePath[0] . "trash\\" . $fileName;
-        }
+        // $folderName = dirname($file);
+        // $arrPath = explode($_SESSION["username"] . "_root/", $folderName);
+        // if ($folderName !== $_SESSION["username"] . "_root") {
+        //     $newPath = $explodePath[0] . "trash" . "\\" . $arrPath[count($arrPath) - 1] . "\\" . $fileName;
+        // } else {
+        //     $newPath = $explodePath[0] . "trash" . "\\" . $fileName;
+        // }
+        $newPath = $explodePath[0] . "trash" . "\\" . $fileName;
     }
     rename($file, $newPath);
     header("Location: ./index.php");
@@ -96,22 +141,28 @@ function deleteFile($file)
     if (isset($_SESSION["fileInfo"])) unset($_SESSION["fileInfo"]);
 }
 
-function editFile($file, $newName)
+function editFile($file, $newName,)
 {
     session_start();
     $explodeDot = explode(".", $file);
     $extension = "." . $explodeDot[count($explodeDot) - 1];
+    $wholePath = dirname($file);
+    $explodeRoot = explode($_SESSION["username"] . "_root/", $wholePath);
 
-    $newCompleteName = "./" . $_SESSION["username"] . "_root/" . $newName . $extension;
+    $newCompleteName = "./" . $_SESSION["username"] . "_root/" . $explodeRoot[1] . "/" . $newName . $extension;
 
     rename($file, $newCompleteName);
 
+    $_SESSION["fileInfo"] = getFileInfo($newCompleteName);
+
+    $_SESSION["fileInfo"]["path"] = $_SESSION["username"] . "_root/" . $explodeRoot[1] . "/" . $newName . $extension;
     $_SESSION["fileInfo"]["shortName"] = $newName;
     $_SESSION["fileInfo"]["name"] = $newName . $extension;
     header("Location: ./index.php");
 }
 
-function listFolderFiles($basePath) {
+function listFolderFiles($basePath)
+{
     $items = scandir($basePath);
     unset($items[array_search('.', $items, true)]);
     unset($items[array_search('..', $items, true)]);
@@ -121,46 +172,60 @@ function listFolderFiles($basePath) {
         $fileExtension = explode(".", $item);
         $fileActualExt = strtolower(end($fileExtension));
         if (is_dir($basePath . '/' . $item)) {
-            echo "<div class='display_folder-title'><img class='fileIcon' src='./Icons/folder.svg'><p class='folder1__element'><a href='./select-file-leftbar.php?file=$basePath/$item' class='link'>$item</a></p></div>";
-            // listFolderFiles($basePath.'/'.$item);
+            echo "<div class='display_folder-title'><img class='fileIcon' src='./Icons/folder.svg'><p class='folder1__element'><a class='main__anchor' href='./select-file.php?file=$basePath/$item' class='link'>$item</a></p></div>";
         } else {
-            echo "<div class='display_folder-title'><img class='fileIcon' src='./Icons/$fileActualExt.svg'><p class='folder1__element'><a href='./select-file-leftbar.php?file=$basePath/$item' class='link'>$item</a></p></div>";
+            echo "<div class='display_folder-title'><img class='fileIcon' src='./Icons/$fileActualExt.svg'><p class='folder1__element'><a class='main__anchor' href='./select-file.php?file=$basePath/$item' class='link'>$item</a></p></div>";
         }
     }
 }
 
-function displayInfoParentFolder($basePath) {
-    $dirContent = scandir($basePath);
+function displayInfoParentFolder($basePath)
+{
+    if (is_dir($basePath)) {
+        $dirContent = scandir($basePath);
         foreach ($dirContent as $v) {
             $fileExtension = explode(".", $v);
             $fileActualExt = strtolower(end($fileExtension));
             $sizeOfFile = get_folder_size($basePath . "/" . $v);
             $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
-            if (!is_file($basePath . "/" . $v)) {
-                if (!($v == '.')) {
-                    if (!($v == '..')) {
-                        echo "
+            if (is_dir($basePath . "/" . $v)) {
+                if ($v !== '.' && $v !== '..') {
+                    echo "
                                     <div class='display_folder'>
                                         <img class='fileIcon' src='./Icons/folder.svg'>
-                                        <p class='folder1__element'><a href='./select-file.php?file=$basePath/$v'>$v</a></p>
+                                        <p class='folder1__element'><a class='main__anchor' href='./select-file.php?file=$basePath/$v'>$v</a></p>
                                         <p>$sizeOfFile</p>
                                         <p>$timeModified</p>
                                     </div>";
-                    }
                 }
             } else {
                 echo "
                                 <div class='display_folder'>
                                     <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
-                                    <p class='folder1__element'><a href='./select-file.php?file=$basePath/$v'>$v</a></p>
+                                    <p class='folder1__element'><a class='main__anchor' href='./select-file.php?file=$basePath/$v'>$v</a></p>
                                     <p>$sizeOfFile</p>
                                     <p>$timeModified</p>
                                 </div>";
             }
         }
+    } else {
+        $arrayPath = explode("/", $basePath);
+        $fileName = $arrayPath[count($arrayPath) - 1];
+        $fileExtension = explode(".", $basePath);
+        $fileActualExt = strtolower(end($fileExtension));
+        $sizeOfFile = convertBytes(filesize($basePath));
+        $timeModified = date("F d Y", filemtime($basePath));
+        echo "
+        <div class='display_folder'>
+            <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
+            <p class='folder1__element'><a class='main__anchor' href='./select-file.php?file=$basePath'>$fileName</a></p>
+            <p>$sizeOfFile</p>
+            <p>$timeModified</p>
+        </div>";
+    }
 }
-
-function listFolderDetails($basePath) {
+function listFolderDetails($basePath)
+{
     if (is_file($basePath)) {
         $fileExtension = explode(".", $basePath);
         $fileActualExt = strtolower(end($fileExtension));
@@ -170,11 +235,11 @@ function listFolderDetails($basePath) {
         echo "
                             <div class='display_folder'>
                                 <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
-                                <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath' class='link'>$name</a></p>
+                                <p class='folder1__element'><a class='main__anchor' href='./select-file-rightbar.php?getFile=$basePath' class='link'>$name</a></p>
                                 <p>$sizeOfFile</p>
                                 <p>$timeModified</p>
                             </div>";
-    } 
+    }
     if (is_dir($basePath)) {
         $dirContent = scandir($basePath);
         foreach ($dirContent as $v) {
@@ -188,7 +253,7 @@ function listFolderDetails($basePath) {
                         echo "
                                     <div class='display_folder'>
                                         <img class='fileIcon' src='./Icons/folder.svg'>
-                                        <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
+                                        <p class='folder1__element'><a class='main__anchor' href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
                                         <p>$sizeOfFile</p>
                                         <p>$timeModified</p>
                                     </div>";
@@ -199,44 +264,39 @@ function listFolderDetails($basePath) {
                 echo "
                                     <div class='display_folder'>
                                     <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
-                                        <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
+                                        <p class='folder1__element'><a class='main__anchor' href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
                                         <p>$sizeOfFile</p>
                                         <p>$timeModified</p>
                                     </div>";
-
             }
         }
     }
 }
 
-function get_folder_size($folder) {
-    $count_size = 0;
-    $count = 0;
-
+function get_folder_size($folder)
+{
+    $total_size = 0;
     if (is_file($folder)) {
-        $count_size = $count_size + filesize($folder);
+        $total_size = $total_size + filesize($folder);
     }
-
     if (is_dir($folder)) {
         $files = scandir($folder);
-        foreach ($files as $key => $file) {
-            if ($file != ".." && $file != ".") {
-                if (is_dir($folder . "/" . $file)) {
-                    $new_folderSize = get_folder_size($folder . "/" . $file);
-                    $count_size = $count_size + $new_folderSize;
-                } else if (is_file($folder . "/" . $file)) {
-                    $count_size = $count_size + filesize($folder . "/" . $file);
-                    $count++;
-                }
+        foreach ($files as $file) {
+            if ($file === '.' or $file === '..') {
+                continue;
+            } else {
+                $path = $folder . '/' . $file;
+                $total_size = $total_size + filesize($path);
+                get_folder_size($path);
             }
         }
-
     }
-    return $count_size;
+    return $total_size;
 }
 
 // Upload files
-function upload($realPath) {
+function upload($realPath)
+{
     if (isset($_POST['submit'])) {
         $file = $_FILES['fileUpload'];
 
@@ -249,12 +309,12 @@ function upload($realPath) {
         $fileExt = explode('.', $fileName);
         $fileActualExt = strtolower(end($fileExt));
 
-        $allowedFileType = array('jpg', 'jpeg', 'png', 'pdf', 'odt', 'txt', 'svg' , 'mp3', 'mp4', 'csv');
+        $allowedFileType = array('jpg', 'jpeg', 'png', 'pdf', 'odt', 'txt', 'svg', 'mp3', 'mp4', 'csv');
 
         if (in_array($fileActualExt, $allowedFileType)) {
             if ($fileError === 0) {
-                if($fileSize < 1000000) {
-                    $fileNewName = uniqid('', true).'.'.$fileActualExt;
+                if ($fileSize < 1000000) {
+                    $fileNewName = uniqid('', true) . '.' . $fileActualExt;
                     $fileDestination = $realPath . "/" . $fileNewName;
                     move_uploaded_file($fileTempDir, $fileDestination);
                     header('Location: ./index.php?uploadsuccess');
@@ -271,7 +331,8 @@ function upload($realPath) {
 }
 
 // Display Path 
-function displayPath($getFile) {
+function displayPath($getFile)
+{
     $arrayPath = array();
     $breakFullPath = explode("/", $getFile);
     $currentIndex = "";
@@ -283,13 +344,14 @@ function displayPath($getFile) {
     $arrayActual = array_slice($arrayPath, 2);
 
     foreach ($arrayActual as $index => $c) {
-            $n = basename($c);
-            echo "<a href='./select-file-rightbar.php?getFile=$arrayActual[$index]'>" . $n . "/" . " " . "</a>";
+        $n = basename($c);
+        echo "<a href='./select-file-rightbar.php?getFile=$arrayActual[$index]'>" . $n . "/" . " " . "</a>";
     }
 }
 
 // Display details of folder/file on right bar
-function displayDetails($basePath) {
+function displayDetails($basePath)
+{
     if (is_file($basePath)) {
         $fileExtension = explode(".", $basePath);
         $fileActualExt = strtolower(end($fileExtension));
@@ -298,7 +360,7 @@ function displayDetails($basePath) {
         $fileActualName = end($getFileName);
 
         $sizeOfFile = filesize($basePath);
-        
+
         $timeModified = date("F d Y", filemtime($basePath));
         echo "
             <div class='details__header'>
@@ -325,7 +387,7 @@ function displayDetails($basePath) {
                     <p>NN</p>
                 </div>
             </div>";
-    } 
+    }
     if (is_dir($basePath)) {
         $getFileName = explode("/", $basePath);
         $fileActualName = end($getFileName);
@@ -357,6 +419,39 @@ function displayDetails($basePath) {
                     <p>NN</p>
                 </div>
             </div>";
+    }
+}
+
+function showTrash()
+{
+
+    $_SESSION["showing-trash"] = true;
+
+    $trashContent = scandir("../trash");
+    foreach ($trashContent as $v) {
+        $fileExtension = explode(".", $v);
+        $fileActualExt = strtolower(end($fileExtension));
+        $sizeOfFile = get_folder_size("../trash/" . $v);
+        $timeModified = date("F d Y", filemtime("../trash/" . $v));
+        if (is_dir("../trash/" . $v)) {
+            if ($v !== '.' && $v !== '..') {
+                echo "
+                                    <div class='display_folder'>
+                                        <img class='fileIcon' src='./Icons/folder.svg'>
+                                        <p class='folder1__element'><a class='main__anchor' href='./select-file--trash.php?file=../trash/$v'>$v</a></p>
+                                        <p>$sizeOfFile</p>
+                                        <p>$timeModified</p>
+                                    </div>";
+            }
+        } else {
+            echo "
+                                <div class='display_folder'>
+                                    <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
+                                    <p class='folder1__element'><a class='main__anchor' href='./select-file--trash.php?file=..trash/$v'>$v</a></p>
+                                    <p>$sizeOfFile</p>
+                                    <p>$timeModified</p>
+                                </div>";
+        }
     }
 }
 
