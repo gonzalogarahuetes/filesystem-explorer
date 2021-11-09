@@ -129,115 +129,116 @@ include(ROOT_PATH . "inc/_head.php");
         <div id="modal" class="modal">
             <span class="close" id="btn-hidde">&times;</span>
             <?php
-            switch ($type) {
-                case "mp4":
-                case "mp3":
-                    echo "
+            if (isset($type)) {
+                switch (strtolower($type)) {
+                    case "mp4":
+                    case "mp3":
+                        echo "
                         <video controls class='modal-content'>
-                            <source src='$name' type='video/mp4'>
+                            <source src='$basepath/$name' type='video/mp4'>
                         </video>
                     ";
-                    break;
+                        break;
 
-                case "jpg":
-                case "png":
-                case "svg":
-                    echo "
-                        <img src='$name' alt='' class='modal-content'>
+                    case "jpg":
+                    case "png":
+                    case "svg":
+                        echo "
+                        <img src='$basepath/$name' alt='' class='modal-content'>
                     ";
-                    break;
+                        break;
 
-                case "ogg":
-                    echo "
+                    case "ogg":
+                        echo "
                         <audio controls>
-                            <source src='$name' type='audio/ogg' class='modal-content'>
+                            <source src='$basepath/$name' type='audio/ogg' class='modal-content'>
                         </audio>
                         ";
-                    break;
+                        break;
 
-                case "zip":
-                    $zip = zip_open("$name");
-                    if ($zip) {
-                        while ($zip_entry = zip_read($zip)) {
-                            echo "File content:\n";
-                            $buf = zip_entry_read($zip_entry);
-                            echo "$buf\n <br>";
-                            zip_entry_close($zip_entry);
+                    case "zip":
+                        $zip = zip_open("$basepath/$name");
+                        if ($zip) {
+                            while ($zip_entry = zip_read($zip)) {
+                                echo "File content:\n";
+                                $buf = zip_entry_read($zip_entry);
+                                echo "$buf\n <br>";
+                                zip_entry_close($zip_entry);
+                            }
+                            zip_close($zip);
                         }
-                        zip_close($zip);
-                    }
-                    break;
+                        break;
 
-                case "pdf":
-                    echo "
-                        <object data='$name' type='application/pdf'  class='modal-content'>
-                            <embed src='$name' type='application/pdf' />
+                    case "pdf":
+                        echo "
+                        <object data='$basepath/$name' type='application/pdf'  class='modal-content'>
+                            <embed src='$basepath/$name' type='application/pdf' />
                         </object>
                     ";
-                    break;
+                        break;
 
-                case "csv":
-                    define('CSV', '$name');
-                    $readCsv = array_map('str_getcsv', file(CSV));
-                    echo "<table border='1'>";
-                    foreach ($readCsv as $itemCsv) {
-                        echo '<tr>';
-                        foreach ($itemCsv as $elementoItemCSV) {
-                            echo '<td>';
-                            //mostramos la celda
-                            echo $elementoItemCSV;
-                            echo '</td>';
+                    case "csv":
+                        define('CSV', '$basepath/$name');
+                        $readCsv = array_map('str_getcsv', file(CSV));
+                        echo "<table border='1'>";
+                        foreach ($readCsv as $itemCsv) {
+                            echo '<tr>';
+                            foreach ($itemCsv as $elementoItemCSV) {
+                                echo '<td>';
+                                //mostramos la celda
+                                echo $elementoItemCSV;
+                                echo '</td>';
+                            }
+                            echo '</tr>';
                         }
-                        echo '</tr>';
-                    }
-                    echo "</table> ";
-                    break;
+                        echo "</table> ";
+                        break;
 
-                case "doc":
-                case "docx":
-                case "odt":
-                case "ppt":
-                case "pptx":
-                    echo "
-                        <p>The office file cannot be previsualized <a href='$name'>Download</a></p>
+                    case "doc":
+                    case "docx":
+                    case "odt":
+                    case "ppt":
+                    case "pptx":
+                        echo "
+                        <p>The office file cannot be previsualized <a href='$basepath/$name'>Download</a></p>
                     ";
-                    break;
+                        break;
 
-                case "exe":
-                    echo "
-                        <p>This file cannot be previsualized <a href='$name'>Download</a></p>
+                    case "exe":
+                        echo "
+                        <p>This file cannot be previsualized <a href='$basepath/$name'>Download</a></p>
                     ";
-                    break;
+                        break;
 
 
-                case "php":
-                    ini_set('highlight.comment', '#CCCCCC; font-weight: bold;');
-                    highlight_file($name);
-                    break;
+                    case "php":
+                        ini_set('highlight.comment', '#CCCCCC; font-weight: bold;');
+                        highlight_file($basepath / $name);
+                        break;
 
-                case "rar":
-                    echo "
-                        <p>This file cannot be previsualized <a href='$name'>Download</a></p>
+                    case "rar":
+                        echo "
+                        <p>This file cannot be previsualized <a href='$basepath/$name'>Download</a></p>
                     ";
-                    break;
+                        break;
 
-                case "txt":
-                    $archivo = file_get_contents("$name");
-                    $archivo = ucfirst($archivo);
-                    $archivo = nl2br($archivo);
-                    echo "
+                    case "txt":
+                        $archivo = file_get_contents("$basepath/$name");
+                        $archivo = ucfirst($archivo);
+                        $archivo = nl2br($archivo);
+                        echo "
                                 <strong class='modal-content'>Archivo de texto archivo.txt:</strong>
                                 <br/><br/>
                                 <p>$archivo</p>
                                 ";
-                    break;
+                        break;
 
-                default:
-                    echo "
-                    <p>You can't show this file <a href='$name'> Download</a></p>
+                    default:
+                        echo "
+                    <p>You can't show this file <a href='$basepath/$name'> Download</a></p>
                             ";
+                }
             }
-
             ?>
         </div>
 
