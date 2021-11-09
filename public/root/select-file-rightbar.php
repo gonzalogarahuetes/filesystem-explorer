@@ -7,7 +7,6 @@ require_once("./user_actions.php");
 $basePath = $_SESSION["username"] . "_root";
 
 $getFile = $_GET["getFile"];
-echo $getFile;
 
 // get path to upload file and create files/folder inside certain folder
 $fullPath = $_SERVER['REQUEST_URI'];

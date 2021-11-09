@@ -36,13 +36,17 @@
 }
 
 .button--small {
-  max-width: 4.35rem;
-  background-color: #29323f;
-  padding: 0.5rem;
-  color: #fff;
+  min-width: 4.5rem;
+  min-height: 2rem;
+  margin: 0.8rem;
+  background: #3498db;
+  border-radius: 28px;
+  font-family: Arial;
+  color: #ffffff;
+  text-decoration: none;
 }
 
 .button--small:hover {
-  background-color: #fcee6d;
-  color: #29323f;
+  background: #3cb0fd;
+  text-decoration: none;
 }

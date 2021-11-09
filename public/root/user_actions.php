@@ -296,9 +296,10 @@ function displayDetails($basePath) {
         $timeModified = date("F d Y", filemtime($basePath));
         echo "
             <div class='details__header'>
+                <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
                 <p classname='details__name'>$fileActualName</p>
                 <button type='button' data-open='modal1' class='details__btn--edit'><img class='fileIcon-medium' src='../../assets/icons/edit.svg'></button>
-                <button class='details__btn--delete' onclick='location.href=\"./delete_file.php?file=$basePath\"'><img class='fileIcon-medium' src='../../assets/icons/delete.svg' onclick='location.href=\"./delete_file.php?file=$basePath\"'></button>
+                <button class='details__btn--delete' onclick='location.href=\"./delete_file.php?file=$basePath/$fileActualName\"'><img class='fileIcon-medium' src='../../assets/icons/delete.svg' onclick='location.href=\"./delete_file.php?file=$basePath/$fileActualName\"'></button>
             </div>
             <div class='details__content'>
                 <div class='details__flex'>
@@ -327,9 +328,10 @@ function displayDetails($basePath) {
         $timeModified = date("F d Y", filemtime($basePath));
         echo "
             <div class='details__header'>
+                <img class='fileIcon' src='./Icons/folder.svg'>
                 <p classname='details__name'>$fileActualName</p>
                 <button type='button' data-open='modal1' class='details__btn--edit'><img class='fileIcon-medium' src='../../assets/icons/edit.svg'></button>
-                <button class='details__btn--delete' onclick='location.href=\"./delete_file.php?file=$basePath\"'><img class='fileIcon-medium' src='../../assets/icons/delete.svg' onclick='location.href=\"./delete_file.php?file=$basePath\"'></button>
+                <button class='details__btn--delete' onclick='location.href=\"./delete_file.php?file=$basePath/$fileActualName\"'><img class='fileIcon-medium' src='../../assets/icons/delete.svg' onclick='location.href=\"./delete_file.php?file=$basePath/$fileActualName\"'></button>
             </div>
             <div class='details__content'>
                 <div class='details__flex'>
