@@ -1,5 +1,6 @@
 <?php
 require_once("../../config/app.php");
+// echo $_SERVER['HTTP_REFERER'];
 
 session_start();
 !$_SESSION["username"] ? header("Location: ../login.php") : "";
@@ -14,6 +15,9 @@ if (isset($_SESSION["fileInfo"])) {
     $shortName = $_SESSION["fileInfo"]["shortName"];
 }
 
+$basePath = $_SESSION["username"] . "_root";
+$realPath = $basePath;
+
 $title = "Index";
 include(ROOT_PATH . "inc/_head.php");
 ?>
@@ -25,17 +29,20 @@ include(ROOT_PATH . "inc/_head.php");
 </header>
 <main class="main">
     <section class="explorer">
-        <form action="./new_folder.php" method="post" class="new-">
-            <input type="text" name="newFolder" class="header__search">
+        <form
+            action=<?= "./new_folder.php?realPath=$realPath" ?>
+            method="post" 
+            class="new-"
+        >
+            <input type="text" name="newFolder" class="explorer__new">
             <button type="submit" class="new-folder"> New Folder</button>
         </form>
         <div class="explorer__folders">
             <div class="explorer__folders-root">
                 <img class='fileIcon' src='./Icons/folder.svg'>
-                <h3>/<?php echo $_SESSION["username"] . "_root" ?></h3>
+                <h3><a href='index.php'>/<?= $basePath ?></a></h3>
             </div>
             <?php
-            $basePath = $_SESSION["username"] . "_root";
             listFolderFiles($basePath);
             ?>
             <div class="explorer__folders-root">
@@ -55,37 +62,11 @@ include(ROOT_PATH . "inc/_head.php");
         </div>
         <div class="content__folder">
             <img class='fileIcon' src='./Icons/folder.svg'>
-            <p class="content__folder-title">Folders</p>
+            <p class="content__folder-title"><a href='index.php'>/<?= $basePath ?></a></p>
         </div>
         <div class="content__list">
             <?php
-            $dirContent = scandir($basePath);
-            foreach ($dirContent as $v) {
-                $fileExtension = explode(".", $v);
-                $sizeOfFile = get_folder_size($basePath . "/" . $v);
-                $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
-                if (!is_file($basePath . "/" . $v)) {
-                    if (!($v == '.')) {
-                        if (!($v == '..')) {
-                            echo "
-                                        <div class='display_folder'>
-                                            <img class='fileIcon' src='./Icons/folder.svg'>
-                                            <p class='folder1__element'><a href='./select-file.php?file=$basePath/$v'>$v</a></p>
-                                            <p>$sizeOfFile</p>
-                                            <p>$timeModified</p>
-                                        </div>";
-                        }
-                    }
-                } else {
-                    echo "
-                                    <div class='display_folder'>
-                                        <img class='fileIcon' src='./Icons/$fileExtension[1].svg'>
-                                        <p class='folder1__element'><a href='./select-file.php?file=$basePath/$v'>$v</a></p>
-                                        <p>$sizeOfFile</p>
-                                        <p>$timeModified</p>
-                                    </div>";
-                }
-            }
+            displayInfoParentFolder($basePath);
             ?>
         </div>
 
@@ -240,7 +221,37 @@ include(ROOT_PATH . "inc/_head.php");
     }
 
     ?>
-    <div class="editing__modal" id="modal1" data-animation="slideInOutLeft">
+    <!-- File Upload Modal  -->
+    <article class="modal__file" id="modal__file">
+        <div class="modal__content-file" id="modal__content-file">
+            <button id="button-close-file" class="modal__close-file">X</button>
+            <form
+                id="modal-form-file"
+                method="post"
+                enctype="multipart/form-data"
+                action=<?= "./upload.php?realPath=$basePath" ?>
+            >
+                <div class="padding-1">
+                    <label for="fileUpload">Title :</label>
+                    <input
+                        type="file"
+                        id="fileUpload"
+                        name="fileUpload"
+                        value=""
+                        required
+                    />
+                </div>
+                <div class="padding-1">
+                    <button id="cancel-modal-file" class="button--small">
+                        Cancel
+                    </button>
+                    <button type="submit" name="submit" class="button--small">Submit</button>
+                </div>
+            </form>
+        </div>
+    </article>
+    
+    <div class="modal" id="modal1" data-animation="slideInOutLeft">
         <div class="modal-dialog">
             <header class="modal-header">
                 <h2 class="modal__title">RENAME FILE</h2>
@@ -260,11 +271,6 @@ include(ROOT_PATH . "inc/_head.php");
         </div>
     </div>
 </main>
-<script>
-    <?php
-        require_once(ROOT_PATH . "assets/js/functions.js");
-    ?>
-</script>
 </body>
 
 

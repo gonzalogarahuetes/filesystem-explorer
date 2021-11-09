@@ -1,3 +1,4 @@
 <?php
   require_once("./user_actions.php");
-  newFolder();
+  $realPath = $_GET["realPath"];
+  newFolder($realPath);
