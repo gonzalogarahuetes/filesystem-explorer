@@ -5,6 +5,8 @@ session_start();
 !$_SESSION["username"] ? header("Location: ../login.php") : "";
 require_once("./user_actions.php");
 
+$basePath = $_SESSION["username"] . "_root";
+
 $file = $_GET["file"];
 
 selectFile($file);
@@ -27,28 +29,9 @@ include(ROOT_PATH . "inc/_head.php");
         <div class="explorer__folders">
             <div class="explorer__folders-root">
                 <img class='fileIcon' src='./Icons/folder.svg'>
-                <h3>/root</h3>
+                <h3><a href='./index.php'>/root</a></h3>
             </div>
             <?php
-            $basePath = "./Files";
-            function listFolderFiles($basePath)
-            {
-                $items = scandir($basePath);
-                unset($items[array_search('.', $items, true)]);
-                unset($items[array_search('..', $items, true)]);
-                // prevent empty ordered elements
-                if (count($items) < 1)
-                    return;
-                foreach ($items as $item) {
-                    $fileExtension = explode(".", $item);
-                    if (is_dir($basePath . '/' . $item)) {
-                        echo "<div class='display_folder-title'><img class='fileIcon' src='./Icons/folder.svg'><p class='folder1__element'><a href='./select-file.php?file=$item' class='link'>$item</a></p></div>";
-                        // listFolderFiles($basePath.'/'.$item);
-                    } else {
-                        echo "<div class='display_folder-title'><img class='fileIcon' src='./Icons/$fileExtension[1].svg'><p class='folder1__element'><a href='./select-file.php?file=$item' class='link'>$item</a></p></div>";
-                    }
-                }
-            }
             listFolderFiles($basePath);
             ?>
         </div>
@@ -68,12 +51,12 @@ include(ROOT_PATH . "inc/_head.php");
         </div>
         <div class="content__list">
             <?php
-            $basePath = "./Files" . "/" . $file;
-            if (is_file($basePath)) {
-                $fileExtension = explode(".", $basePath);
+            $filePath = $basePath . "/" . $file;
+            if (is_file($filePath)) {
+                $fileExtension = explode(".", $filePath);
                 // echo $fileExtension[2];
-                $sizeOfFile = filesize($basePath);
-                $timeModified = date("F d Y", filemtime($basePath));
+                $sizeOfFile = filesize($filePath);
+                $timeModified = date("F d Y", filemtime($filePath));
                 echo "
                                     <div class='display_folder'>
                                         <img class='fileIcon' src='./Icons/$fileExtension[2].svg'>
@@ -82,12 +65,12 @@ include(ROOT_PATH . "inc/_head.php");
                                         <p>$timeModified</p>
                                     </div>";
             } else {
-                $dirContent = scandir($basePath);
+                $dirContent = scandir($filePath);
                 foreach ($dirContent as $v) {
                     $fileExtension = explode(".", $v);
-                    $sizeOfFile = get_folder_size($basePath . "/" . $v);
-                    $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
-                    if (!is_file($basePath . "/" . $v)) {
+                    $sizeOfFile = get_folder_size($filePath . "/" . $v);
+                    $timeModified = date("F d Y", filemtime($filePath . "/" . $v));
+                    if (!is_file($filePath . "/" . $v)) {
                         if (!($v == '.')) {
                             if (!($v == '..')) {
                                 echo "
@@ -103,30 +86,10 @@ include(ROOT_PATH . "inc/_head.php");
                 }
             }
 
-            function get_folder_size($folder)
-            {
-                $total_size = 0;
-                if (is_file($folder)) $total_size = $total_size + filesize($folder);
-                if (is_dir($folder)) {
-                    $files = scandir($folder);
-                    foreach ($files as $file) {
-                        if ($file === '.' or $file === '..') {
-                            continue;
-                        } else {
-                            $path = $folder . '/' . $file;
-                            $total_size = $total_size + filesize($path);
-                            get_folder_size($path);
-                        }
-                    }
-                }
-                return $total_size;
-            }
+            
             ?>
         </div>
     </section>
-<<<<<<< HEAD
-
-=======
     <section class="details">
         <div class="details__title">
             <i></i>
@@ -135,13 +98,42 @@ include(ROOT_PATH . "inc/_head.php");
             <button class="details__btn--delete"><img class='fileIcon-medium' src="../../assets/icons/delete.svg"></button>
         </div>
         <div class="details__content">
-            <p>Type <span>PHP<span></p>
+            <!-- <p>Type <span>PHP<span></p>
             <p>Size <span>500Kb<span></p>
             <p>Modified <span>12/01/2021<span></p>
-            <p>Created <span>1/01/2021<span></p>
+            <p>Created <span>1/01/2021<span></p> -->
         </div>
     </section>
->>>>>>> master
+
+    <!-- File Upload Modal  -->
+    <article class="modal__file" id="modal__file">
+        <div class="modal__content-file" id="modal__content-file">
+            <button id="button-close-file" class="modal__close-file">X</button>
+            <form
+                id="modal-form-file"
+                method="post"
+                enctype="multipart/form-data"
+                action="./upload.php"
+            >
+                <div class="padding-1">
+                    <label for="fileUpload">Title :</label>
+                    <input
+                        type="file"
+                        id="fileUpload"
+                        name="fileUpload"
+                        value=""
+                        required
+                    />
+                </div>
+                <div class="padding-1">
+                    <button id="cancel-modal-file" class="button--small">
+                        Cancel
+                    </button>
+                    <button type="submit" name="submit" class="button--small">Submit</button>
+                </div>
+                </form>
+        </div>
+    </article><!-- File Modal  -->
 </main>
 </body>
 
