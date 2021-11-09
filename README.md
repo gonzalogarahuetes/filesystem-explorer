@@ -31,7 +31,7 @@ The main objective of this project is to replicate a system file explorer that a
 
 - [@Gonzalo](https://github.com/gonzalogarahuetes)
 - [@Jaime](https://github.com/jaimealcalde)
-- [@Salvador]()
+- [@Salvador](https://github.com/SalvaBandicoot)
 - [@tam](https://github.com/tamtran2885)
 
 ## Resources
