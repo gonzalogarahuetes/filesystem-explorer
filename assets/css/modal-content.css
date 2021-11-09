@@ -1,44 +1,48 @@
 .close {
-    color: #ffffff;
-    float: right;
-    font-size: 40px;
-    font-weight: bold;
-    max-height: 10%;
-    max-width: 10%;
-    margin-left: 4%;
-    margin-right: 3%;
-    margin-top: 2%;
-    margin-bottom: 0;
+  color: #ffffff;
+  float: right;
+  font-size: 40px;
+  font-weight: bold;
+  max-height: 10%;
+  max-width: 10%;
+  margin-left: 4%;
+  margin-right: 3%;
+  margin-top: 2%;
+  margin-bottom: 0;
 }
 
 .close:hover,
 .close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-.modal{
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    margin: auto;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 95%; /* Full width */
-    height: 95%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    text-align: center;
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 95%; /* Full width */
+  height: 95%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  text-align: center;
 }
 
-.modal-content{
-    width: 90%;
-    height: 90%;
-    max-width: 980px;
-    max-height: 980px;
-    margin-left: 10%;
-    margin-right: 10%;
+.modal-content {
+  width: 90%;
+  height: 90%;
+  max-width: 980px;
+  max-height: 980px;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.modal__button3 {
+  background-color: red;
 }

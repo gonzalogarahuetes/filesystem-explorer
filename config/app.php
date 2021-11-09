@@ -1,6 +1,5 @@
 <?php
 /* Help to set up and allow PHP to generate the link to other pages file automatically */
-// define ( "BASE_URL", "/PHP/filesystem-explorer/" );
-// define ( "ROOT_PATH", $_SERVER["DOCUMENT_ROOT"] . "/PHP/filesystem-explorer/" );
-define("BASE_URL", "C:/xampp/htdocs/PHP/filesystem-explorer/");
-define("ROOT_PATH", $_SERVER["DOCUMENT_ROOT"] . "/PHP/filesystem-explorer/");
+$arrayPath = explode("config", __DIR__);
+define("BASE_URL", $arrayPath[0]);
+define("ROOT_PATH", $arrayPath[0]);

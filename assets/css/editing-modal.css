@@ -1,6 +1,6 @@
 /*---------------------------------EDITING MODAL-------------------------------------*/
 
-.modal {
+.editing__modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -16,7 +16,7 @@
   opacity: 0;
   transition: all 0.35s ease-in;
 }
-.modal.is-visible {
+.editing__modal.is-visible {
   visibility: visible;
   opacity: 1;
 }
