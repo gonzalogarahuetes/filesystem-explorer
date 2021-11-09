@@ -84,7 +84,7 @@
   font-size: 1.5;
   border: 2px solid rgba(0, 136, 169, 1);
   border-radius: 0.3rem;
-  margin: 0.5rem 1rem;
+  margin: 0.5rem 0.5rem 0 0;
 }
 
 .modal__input:focus {
@@ -97,7 +97,7 @@
   border-radius: 0.3rem;
   border: none;
   background-color: rgba(0, 136, 169, 1);
-  margin: 0.5rem 1rem;
+  margin: 0.5rem 0.5rem;
   cursor: pointer;
 }
 

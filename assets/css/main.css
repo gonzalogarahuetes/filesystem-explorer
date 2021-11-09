@@ -44,3 +44,12 @@
   align-items: center;
   margin: 5px 10px;
 }
+
+.main__anchor {
+  text-decoration: none;
+  color: rgba(0, 136, 169, 1);
+}
+
+.main__anchor:hover {
+  color: rgba(0, 136, 169, 0.7);
+}
