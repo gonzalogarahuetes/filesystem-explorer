@@ -4,8 +4,12 @@ session_start();
 !$_SESSION["username"] ? header("Location: ../login.php") : "";
 require_once("./user_actions.php");
 
-$getFile = $_GET["getFile"];
+$basePath = $_SESSION["username"] . "_root";
 
+$getFile = $_GET["getFile"];
+echo $getFile;
+
+// get path to upload file and create files/folder inside certain folder
 $fullPath = $_SERVER['REQUEST_URI'];
 $explodePath = explode('=', $fullPath);
 $realPath = end($explodePath);
@@ -32,10 +36,9 @@ include(ROOT_PATH . "inc/_head.php");
         <div class="explorer__folders">
             <div class="explorer__folders-root">
                 <img class='fileIcon' src='./Icons/folder.svg'>
-                <h3><a href='./index.php'>/Files</a></h3>
+                <h3><a href='./index.php'>/<?= $basePath ?></a></h3>
             </div>
             <?php
-            $basePath = "./Files";
             listFolderFiles($basePath);
             ?>
         </div>
@@ -52,122 +55,28 @@ include(ROOT_PATH . "inc/_head.php");
         <div class="content__folder">
             <img class='fileIcon' src='./Icons/folder.svg'>
             <p class="content__folder-title">
-                <a href="<?Php echo create_url("/");?>">Files</a>
+                <h3><a href='./index.php'>/<?= $basePath ?></a></h3>
                     /
                 <?php
-                $arrayPath = array();
-                $breakFullPath = explode("/", $getFile);
-                $currentIndex = "";
-                for ($i = 0; $i < count($breakFullPath); $i++) {
-                    $currentIndex = $currentIndex . $breakFullPath[$i] . "/";
-                    array_push($arrayPath, $currentIndex);
-                }
-                // print_r($arrayPath);
-                $arrayActual = array_slice($arrayPath, 2);
-
-                foreach ($arrayActual as $index => $c) {
-                        $n = basename($c);
-                        echo "<a href='./select-file-rightbar.php?getFile=$arrayActual[$index]'>" . $n . "/" . " " . "</a>";
-                }
+                $path = $getFile;
+                displayPath($path);
                 ?>
             </p>
         </div>
         <div class="content__list">
             <?php
-            $basePath = $getFile;
-            if (is_file($basePath)) {
-                $fileExtension = explode(".", $basePath);
-                $fileActualExt = strtolower(end($fileExtension));
-                // echo $fileExtension[2];
-                $sizeOfFile = filesize($basePath);
-                $timeModified = date("F d Y", filemtime($basePath));
-                echo "
-                                    <div class='display_folder'>
-                                        <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
-                                        <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$getFile' class='link'>$getFile</a></p>
-                                        <p>$sizeOfFile</p>
-                                        <p>$timeModified</p>
-                                    </div>";
-            }
-            if (is_dir($basePath)) {
-                $dirContent = scandir($basePath);
-                foreach ($dirContent as $v) {
-                    $fileExtension = explode(".", $v);
-                    $fileActualExt = strtolower(end($fileExtension));
-                    $sizeOfFile = get_folder_size($basePath . "/" . $v);
-                    $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
-                    if (!is_file($basePath . "/" . $v)) {
-                        if (!($v == '.')) {
-                            if (!($v == '..')) {
-                                echo "
-                                            <div class='display_folder'>
-                                                <img class='fileIcon' src='./Icons/folder.svg'>
-                                                <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
-                                                <p>$sizeOfFile</p>
-                                                <p>$timeModified</p>
-                                            </div>";
-                            }
-                        }
-                    }
-                    if (is_file($basePath . "/" . $v)) {
-                        echo "
-                                            <div class='display_folder'>
-                                            <img class='fileIcon' src='./Icons/$fileActualExt.svg'>
-                                                <p class='folder1__element'><a href='./select-file-rightbar.php?getFile=$basePath/$v' class='link'>$v</a></p>
-                                                <p>$sizeOfFile</p>
-                                                <p>$timeModified</p>
-                                            </div>";
-
-                    }
-                }
-            }
-
-            
+            $path = "./" . $getFile;
+            listFolderDetails($path);
             ?>
         </div>
     </section>
     <section class="details">
-        <div class="details__title">
-            <i></i>
-            <p>
-                <?php
-                    $fileExplode = explode("/", $getFile);
-                    $fileActualName = strtolower(end($fileExplode));
-                    echo $fileActualName;
-                ?>
-            </p>
-            <button class="details__btn--edit"><img class='fileIcon-medium' src="../../assets/icons/edit.svg"></button>
-            <button class="details__btn--delete"><img class='fileIcon-medium' src="../../assets/icons/delete.svg"></button>
-        </div>
-        <div class="details__content">
             <?php
-                $basePath = $getFile;
-                if (is_file($basePath)) {
-                    $fileExtension = explode(".", $basePath);
-                    $fileActualExt = strtolower(end($fileExtension));
-                    $sizeOfFile = filesize($basePath);
-                    $timeModified = date("F d Y", filemtime($basePath));
-                    echo "
-                                        <div'>
-                                            <p>Type: $fileActualExt<p>
-                                            <p>Name: $fileActualName</a></p>
-                                            <p>Size: $sizeOfFile</p>
-                                            <p>Modified: $timeModified</p>
-                                        </div>";
-                } 
-                if (is_dir($basePath)) {
-                    $sizeOfFile = get_folder_size($basePath . "/" . $v);
-                    $timeModified = date("F d Y", filemtime($basePath . "/" . $v));
-                    echo "
-                                <div'>
-                                <p>Type: folder<p>
-                                <p>Name: $fileActualName</a></p>
-                                <p>Size: $sizeOfFile</p>
-                                <p>Modified: $timeModified</p>
-                            </div>";
-                } 
+                $basePath = "./" . $getFile;
+                displayDetails($basePath);
             ?>
         </div>
+
     </section>
 
     <!-- File Upload Modal  -->

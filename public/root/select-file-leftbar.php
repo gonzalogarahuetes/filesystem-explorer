@@ -9,9 +9,10 @@ $basePath = $_SESSION["username"] . "_root";
 
 $file = $_GET["file"];
 
-// $fullPath = $_SERVER['REQUEST_URI'];
-// $explodePath = explode('=', $fullPath);
-// $realPath = end($explodePath);
+// get path to upload file and create files/folder inside certain folder
+$fullPath = $_SERVER['REQUEST_URI'];
+$explodePath = explode('=', $fullPath);
+$realPath = end($explodePath);
 
 $title = "Index";
 include(ROOT_PATH . "inc/_head.php");
@@ -24,9 +25,9 @@ include(ROOT_PATH . "inc/_head.php");
 </header>
 <main class="main">
     <section class="explorer">
-        <form 
-            action=<?= "./new_folder.php?realPath=$basePath" ?>
-            method="post" 
+        <form
+            action=<?= "./new_folder.php?realPath=$realPath" ?>
+            method="post"
             class="new-"
         >
             <input type="text" name="newFolder" class="explorer__new">
@@ -36,6 +37,11 @@ include(ROOT_PATH . "inc/_head.php");
             <div class="explorer__folders-root">
                 <img class='fileIcon' src='./Icons/folder.svg'>
                 <h3><a href='./index.php'>/<?= $basePath ?></a></h3>
+                    /
+                <?php
+                    $path = $file;
+                    displayPath($path);
+                ?>
             </div>
             <?php
             listFolderFiles($basePath);
@@ -53,28 +59,20 @@ include(ROOT_PATH . "inc/_head.php");
         </div>
         <div class="content__folder">
             <img class='fileIcon' src='./Icons/folder.svg'>
-            <p class="content__folder-title"><a href='./index.php'>/<?= $basePath ?></a>/<a href="<?Php echo create_url("/select-file-leftbar.php", ["file" => $file]);?>"><?php echo basename($file) ?></a></p>
+            <p class="content__folder-title"><a href='./index.php'>/<?= $basePath ?></a></p>
         </div>
         <div class="content__list">
             <?php
-            $basePath = $file;
-            listFolderDetails($basePath);
+            $path = "./" . $file;
+            listFolderDetails($path);
             ?>
         </div>
     </section>
     <section class="details">
-        <div class="details__title">
-            <i></i>
-            <p>Title</p>
-            <button class="details__btn--edit"><img class='fileIcon-medium' src="../../assets/icons/edit.svg"></button>
-            <button class="details__btn--delete"><img class='fileIcon-medium' src="../../assets/icons/delete.svg"></button>
-        </div>
-        <div class="details__content">
-            <!-- <p>Type <span>PHP<span></p>
-            <p>Size <span>500Kb<span></p>
-            <p>Modified <span>12/01/2021<span></p>
-            <p>Created <span>1/01/2021<span></p> -->
-        </div>
+        <?php
+            $basePath = "./" . $file;
+            displayDetails($basePath);
+        ?>
     </section>
 
     <!-- File Upload Modal  -->
@@ -85,7 +83,7 @@ include(ROOT_PATH . "inc/_head.php");
                 id="modal-form-file"
                 method="post"
                 enctype="multipart/form-data"
-                action=<?= "./upload.php?realPath=$basePath" ?>
+                action=<?= "./upload.php?realPath=$realPath" ?>
             >
                 <div class="padding-1">
                     <label for="fileUpload">Title :</label>

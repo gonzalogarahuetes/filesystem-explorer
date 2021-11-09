@@ -3,15 +3,14 @@
 function newFolder($realPath)
 {
     session_start();
-    echo $realPath;
 
     $username = $_SESSION["username"];
     $folderName = $_POST["newFolder"];
-    // $path = "./" . $username . "_root" . "/" . $folderName;
+    $path = "./$realPath/$folderName";
 
-    mkdir($realPath, 0777, true);
+    mkdir($path, 0777, true);
 
-    // header("Location: ./index.php");
+    header("Location: ./index.php");
 }
 
 
@@ -265,18 +264,90 @@ function upload($realPath) {
     }
 }
 
+// Display Path 
+function displayPath($getFile) {
+    $arrayPath = array();
+    $breakFullPath = explode("/", $getFile);
+    $currentIndex = "";
+    for ($i = 0; $i < count($breakFullPath); $i++) {
+        $currentIndex = $currentIndex . $breakFullPath[$i] . "/";
+        array_push($arrayPath, $currentIndex);
+    }
+    // print_r($arrayPath);
+    $arrayActual = array_slice($arrayPath, 2);
 
-// Functions regarding path
-function create_url($path, $arguments=[]) {
-    $url = BASE_PATH;
-    if ($path != "/") {
-        $url = $url . $path;
+    foreach ($arrayActual as $index => $c) {
+            $n = basename($c);
+            echo "<a href='./select-file-rightbar.php?getFile=$arrayActual[$index]'>" . $n . "/" . " " . "</a>";
     }
-    if (count($arguments) > 0) {
-        $url = $url . "?";
-        foreach ($arguments as $key => $value) {
-            $url = $url . $key . "=" . $value;
-        }
+}
+
+// Display details of folder/file on right bar
+function displayDetails($basePath) {
+    if (is_file($basePath)) {
+        $fileExtension = explode(".", $basePath);
+        $fileActualExt = strtolower(end($fileExtension));
+
+        $getFileName = explode("/", $basePath);
+        $fileActualName = end($getFileName);
+
+        $sizeOfFile = filesize($basePath);
+        
+        $timeModified = date("F d Y", filemtime($basePath));
+        echo "
+            <div class='details__header'>
+                <p classname='details__name'>$fileActualName</p>
+                <button type='button' data-open='modal1' class='details__btn--edit'><img class='fileIcon-medium' src='../../assets/icons/edit.svg'></button>
+                <button class='details__btn--delete' onclick='location.href=\"./delete_file.php?file=$basePath\"'><img class='fileIcon-medium' src='../../assets/icons/delete.svg' onclick='location.href=\"./delete_file.php?file=$basePath\"'></button>
+            </div>
+            <div class='details__content'>
+                <div class='details__flex'>
+                    <p><strong>Type:</strong></p>
+                    <p>$fileActualExt</p>
+                </div>
+                <div class='details__flex'>
+                    <p><strong>Size:</strong></p>
+                    <p>$sizeOfFile</p>
+                </div>
+                <div class='details__flex'>
+                    <p><strong>Modified:</strong></p>
+                    <p>$timeModified</p>
+                </div>
+                <div class='details__flex'>
+                    <p><strong>Created:</strong></p>
+                    <p>NN</p>
+                </div>
+            </div>";
+    } 
+    if (is_dir($basePath)) {
+        $getFileName = explode("/", $basePath);
+        $fileActualName = end($getFileName);
+
+        $sizeOfFile = get_folder_size($basePath);
+        $timeModified = date("F d Y", filemtime($basePath));
+        echo "
+            <div class='details__header'>
+                <p classname='details__name'>$fileActualName</p>
+                <button type='button' data-open='modal1' class='details__btn--edit'><img class='fileIcon-medium' src='../../assets/icons/edit.svg'></button>
+                <button class='details__btn--delete' onclick='location.href=\"./delete_file.php?file=$basePath\"'><img class='fileIcon-medium' src='../../assets/icons/delete.svg' onclick='location.href=\"./delete_file.php?file=$basePath\"'></button>
+            </div>
+            <div class='details__content'>
+                <div class='details__flex'>
+                    <p><strong>Type:</strong></p>
+                    <p>Folder</p>
+                </div>
+                <div class='details__flex'>
+                    <p><strong>Size:</strong></p>
+                    <p>$sizeOfFile</p>
+                </div>
+                <div class='details__flex'>
+                    <p><strong>Modified:</strong></p>
+                    <p>$timeModified</p>
+                </div>
+                <div class='details__flex'>
+                    <p><strong>Created:</strong></p>
+                    <p>NN</p>
+                </div>
+            </div>";
     }
-    return $url;
 }

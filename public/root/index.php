@@ -16,8 +16,7 @@ if (isset($_SESSION["fileInfo"])) {
 }
 
 $basePath = $_SESSION["username"] . "_root";
-
-// $realPath = "./Files";
+$realPath = $basePath;
 
 $title = "Index";
 include(ROOT_PATH . "inc/_head.php");
@@ -30,8 +29,8 @@ include(ROOT_PATH . "inc/_head.php");
 </header>
 <main class="main">
     <section class="explorer">
-        <form 
-            action=<?= "./new_folder.php?realPath=" . $_GET['file'] ?>
+        <form
+            action=<?= "./new_folder.php?realPath=$realPath" ?>
             method="post" 
             class="new-"
         >
