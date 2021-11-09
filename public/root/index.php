@@ -26,7 +26,7 @@ include(ROOT_PATH . "inc/_head.php");
 <main class="main">
     <section class="explorer">
         <form action="./new_folder.php" method="post" class="new-">
-            <input type="text" name="newFolder" class="explorer__new">
+            <input type="text" name="newFolder" class="header__search">
             <button type="submit" class="new-folder"> New Folder</button>
         </form>
         <div class="explorer__folders">
@@ -89,8 +89,6 @@ include(ROOT_PATH . "inc/_head.php");
             ?>
         </div>
 
-        <button id='btn-show'>Open</button>
-        
         <div id="modal" class="modal">
             <span class="close" id="btn-hidde">&times;</span>
             <?php
@@ -237,11 +235,12 @@ include(ROOT_PATH . "inc/_head.php");
                                     <p>" . ($created ? $created : '') . "</p>
                                 </div>
                             </div>
+                            <button class='details__preview' id='btn-show'>Preview</button>
                         </section>";
     }
 
     ?>
-    <div class="modal" id="modal1" data-animation="slideInOutLeft">
+    <div class="editing__modal" id="modal1" data-animation="slideInOutLeft">
         <div class="modal-dialog">
             <header class="modal-header">
                 <h2 class="modal__title">RENAME FILE</h2>

@@ -12,14 +12,21 @@ closeEl.addEventListener("click", function () {
 });
 
 document.addEventListener("click", (e) => {
-  if (e.target == document.querySelector(".modal.is-visible")) {
-    document.querySelector(".modal.is-visible").classList.remove(isVisible);
+  if (e.target == document.querySelector(".editing__modal.is-visible")) {
+    document
+      .querySelector(".editing__modal.is-visible")
+      .classList.remove(isVisible);
   }
 });
 
 document.addEventListener("keyup", (e) => {
   // if we press the ESC
-  if (e.key == "Escape" && document.querySelector(".modal.is-visible")) {
-    document.querySelector(".modal.is-visible").classList.remove(isVisible);
+  if (
+    e.key == "Escape" &&
+    document.querySelector(".editing__modal.is-visible")
+  ) {
+    document
+      .querySelector(".editing__modal.is-visible")
+      .classList.remove(isVisible);
   }
 });

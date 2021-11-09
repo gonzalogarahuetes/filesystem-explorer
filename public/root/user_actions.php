@@ -6,7 +6,7 @@ function newFolder()
 
     $username = $_SESSION["username"];
     $folderName = $_POST["newFolder"];
-    $path = "./" . $username . "_root" . "/" . $folderName;
+    $path = "./$username" . "_root/$folderName";
 
     mkdir($path, 0777, true);
 
